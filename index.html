@@ -11,6 +11,7 @@
 /* ============================================================
    PAINEL LEAN — Simulador do Protótipo de Telas (Seção 4.1)
    Estética: industrial control-room / chão de fábrica O&G
+   v2 — PA 2,5 dias · Andon padronizado · agendamento fornecedor
    ============================================================ */
 :root{
   --steel-950:#0b0e13; --steel-900:#10141c; --steel-850:#141a24; --steel-800:#1a2230;
@@ -34,7 +35,6 @@ body{
   background:var(--steel-950); color:var(--ink); font-family:var(--body);
   min-height:100vh; overflow-x:hidden;
 }
-/* bancada: blueprint grid + vinheta + ruído */
 body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
     radial-gradient(1200px 600px at 50% -10%, rgba(57,194,255,.07), transparent 60%),
@@ -75,11 +75,13 @@ header.desk::after{content:"";position:absolute;left:0;bottom:-1px;width:210px;h
 /* ===================== BARRA DE CONTROLE ===================== */
 .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;
   background:linear-gradient(180deg,var(--steel-850),var(--steel-900));
-  border:1px solid var(--steel-700);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:24px;
+  border:1px solid var(--steel-700);border-radius:var(--r-lg);padding:12px 14px;margin-bottom:8px;
   box-shadow:0 14px 36px rgba(0,0,0,.4)}
 .ctl-group{display:flex;align-items:center;gap:8px;padding-right:14px;margin-right:4px;border-right:1px dashed var(--steel-700)}
 .ctl-group:last-child{border-right:none;padding-right:0}
 .ctl-label{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;margin-right:2px}
+.simnote{font-size:11px;color:var(--ink-faint);margin:0 4px 22px;letter-spacing:.02em}
+.simnote b{color:var(--ink-dim)}
 button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 .btn{background:var(--steel-800);border:1px solid var(--steel-600);border-radius:10px;
   padding:8px 14px;font-size:13px;font-weight:600;transition:.18s;display:inline-flex;align-items:center;gap:7px}
@@ -99,6 +101,10 @@ button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 .toggle.on{color:var(--ink)}
 .toggle.on .tk{background:var(--andon-green-deep)}
 .toggle.on .tk::after{left:16px;background:#fff}
+.mini-step{display:inline-flex;align-items:center;border:1px solid var(--steel-600);border-radius:9px;overflow:hidden;background:var(--steel-900)}
+.mini-step button{width:28px;height:30px;background:transparent;font-size:14px;color:var(--ink-dim)}
+.mini-step button:hover{color:#fff;background:var(--steel-700)}
+.mini-step b{font-family:var(--mono);font-size:12px;min-width:52px;text-align:center}
 .btn-scn{border-color:#6a4a17;background:linear-gradient(180deg,#2a2010,#1d1709);color:var(--gold)}
 .btn-scn:hover{background:#33270f}
 .btn-scn.armed{outline:2px solid var(--andon-amber);outline-offset:1px;animation:armed 1.2s infinite}
@@ -138,11 +144,11 @@ button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 
 /* app header dentro do telefone */
 .apphead{padding:8px 16px 12px;border-bottom:1px solid var(--app-line);position:relative}
-.apphead .app-id{display:flex;justify-content:space-between;align-items:center}
-.apphead h2{font-family:var(--disp);font-size:21px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;line-height:1.05}
+.apphead .app-id{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.apphead h2{font-family:var(--disp);font-size:20px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;line-height:1.05}
 .apphead h2 small{display:block;font-family:var(--body);font-size:11px;font-weight:500;color:var(--ink-faint);
   letter-spacing:.04em;text-transform:none;margin-top:3px}
-.role-emblem{font-family:var(--disp);font-size:10.5px;font-weight:700;letter-spacing:.14em;padding:5px 10px;border-radius:7px}
+.role-emblem{font-family:var(--disp);font-size:10.5px;font-weight:700;letter-spacing:.14em;padding:5px 10px;border-radius:7px;flex:none}
 .emblem-op{background:rgba(57,194,255,.12);color:var(--cyan);border:1px solid rgba(57,194,255,.35)}
 .emblem-campo{background:rgba(255,122,26,.12);color:var(--safety);border:1px solid rgba(255,122,26,.4)}
 .emblem-gestor{background:rgba(255,209,102,.1);color:var(--gold);border:1px solid rgba(255,209,102,.35)}
@@ -151,16 +157,23 @@ button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 .card{background:var(--app-card);border:1px solid var(--app-line);border-radius:var(--r-md);
   margin:11px 13px 0;padding:13px 14px;position:relative}
 .card-title{font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-faint);
-  display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;gap:6px}
 .card-title .hint{letter-spacing:.02em;font-weight:500;text-transform:none;color:var(--ink-faint)}
 
-/* ANDON master strip */
+/* seletor de escopo dos Registros */
+.logseg{display:flex;background:var(--app-bg);border:1px solid var(--app-line2);border-radius:7px;overflow:hidden;flex:none}
+.logseg button{background:transparent;padding:3px 8px;font-size:8.5px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-faint)}
+.logseg button.on{background:var(--steel-600);color:#fff}
+
+/* ANDON master strip — padrão: Regular / Atenção / Crítico */
 .andon-strip{margin:12px 13px 0;border-radius:var(--r-md);padding:11px 14px;display:flex;align-items:center;gap:12px;
   border:1px solid;transition:background .4s,border-color .4s;position:relative;overflow:hidden}
 .andon-strip .lamp{width:34px;height:34px;border-radius:50%;flex:none;position:relative;border:2px solid rgba(0,0,0,.35)}
 .andon-strip .lamp::after{content:"";position:absolute;inset:6px;border-radius:50%;background:rgba(255,255,255,.32);filter:blur(3px);opacity:.7}
-.andon-strip .a-txt b{font-family:var(--disp);font-size:16.5px;letter-spacing:.07em;text-transform:uppercase;display:block;line-height:1.1}
-.andon-strip .a-txt span{font-size:11.5px;opacity:.85}
+.andon-strip .a-txt{min-width:0}
+.andon-strip .a-txt b{font-family:var(--disp);font-size:17px;letter-spacing:.09em;text-transform:uppercase;display:block;line-height:1.1}
+.andon-strip .a-txt span{font-size:11.5px;opacity:.85;display:block}
 .andon-green{background:linear-gradient(135deg,rgba(45,216,129,.13),rgba(45,216,129,.04));border-color:rgba(45,216,129,.4)}
 .andon-green .lamp{background:var(--andon-green);box-shadow:0 0 16px rgba(45,216,129,.55)}
 .andon-green .a-txt b{color:var(--andon-green)}
@@ -174,6 +187,16 @@ button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 .andon-strip.flashbg::before{content:"";position:absolute;inset:0;background:currentColor;opacity:0;animation:stripflash .55s ease-out}
 @keyframes stripflash{0%{opacity:.25}100%{opacity:0}}
 
+/* chips de função Andon (Gestão) */
+.achips{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.achip{background:var(--app-card2);border:1px solid var(--app-line2);border-radius:8px;padding:7px 4px;text-align:center}
+.achip i{display:block;width:10px;height:10px;border-radius:50%;margin:0 auto 4px;background:var(--steel-500)}
+.achip.g i{background:var(--andon-green);box-shadow:0 0 7px var(--andon-green)}
+.achip.a i{background:var(--andon-amber);box-shadow:0 0 7px var(--andon-amber);animation:lampblink 1s infinite}
+.achip.r i{background:var(--andon-red);box-shadow:0 0 7px var(--andon-red);animation:lampblink .5s infinite}
+.achip span{font-family:var(--disp);font-weight:700;font-size:10px;letter-spacing:.05em;color:var(--ink-dim);display:block;line-height:1.2}
+.achip small{font-size:7.5px;color:var(--ink-faint);letter-spacing:.06em;text-transform:uppercase}
+
 /* abas de estação (Operação) */
 .sta-tabs{display:flex;gap:6px;margin:12px 13px 0}
 .sta-tabs button{flex:1;background:var(--app-card);border:1px solid var(--app-line);border-radius:9px;
@@ -186,19 +209,24 @@ button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 .sta-tabs button.s-crit .sled{background:var(--andon-red);box-shadow:0 0 6px var(--andon-red);animation:lampblink .5s infinite}
 
 /* painel da estação */
-.sta-state{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.sta-state .st-name{font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.sta-state{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:6px}
+.sta-state .st-name{font-family:var(--disp);font-size:17px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;min-width:0}
 .sta-state .st-name small{display:block;font-family:var(--body);font-size:10.5px;color:var(--ink-faint);font-weight:500;letter-spacing:.03em;text-transform:none}
-.st-badge{font-size:10px;font-weight:700;letter-spacing:.1em;padding:4px 9px;border-radius:6px;text-transform:uppercase}
+.st-badge{font-size:10px;font-weight:700;letter-spacing:.1em;padding:4px 9px;border-radius:6px;text-transform:uppercase;flex:none}
 .stb-run{background:rgba(45,216,129,.14);color:var(--andon-green)}
 .stb-idle{background:rgba(93,107,133,.18);color:var(--ink-dim)}
 .stb-warn{background:rgba(255,194,51,.16);color:var(--andon-amber)}
 .stb-crit{background:rgba(255,77,77,.16);color:var(--andon-red)}
 .stb-lunch{background:rgba(57,194,255,.13);color:var(--cyan)}
+.kbadge{display:inline-flex;align-items:center;gap:5px;margin-left:6px;font-family:var(--disp);font-size:10px;
+  font-weight:800;letter-spacing:.08em;color:#1d1206;background:linear-gradient(160deg,#ff8c2e,#e85d04);
+  border-radius:6px;padding:3px 7px;box-shadow:0 3px 8px rgba(0,0,0,.35);vertical-align:middle}
+.kbadge.pulse{animation:kpulse 1.1s infinite}
+@keyframes kpulse{50%{box-shadow:0 0 12px rgba(255,122,26,.8)}}
 
-/* ciclo vs takt */
+/* tempo de processamento vs takt */
 .cycle-zone{background:var(--app-card2);border:1px solid var(--app-line2);border-radius:10px;padding:10px 12px;margin-bottom:10px}
-.cz-top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--ink-dim);margin-bottom:7px}
+.cz-top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--ink-dim);margin-bottom:13px}
 .cz-top b{color:var(--ink);font-weight:600}
 .cycle-track{height:14px;border-radius:7px;background:var(--steel-900);position:relative;overflow:visible;border:1px solid var(--app-line)}
 .cycle-fill{height:100%;border-radius:7px 0 0 7px;background:linear-gradient(90deg,var(--andon-green-deep),var(--andon-green));
@@ -207,49 +235,48 @@ button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 .takt-mark{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--safety);box-shadow:0 0 6px var(--safety)}
 .takt-mark::after{content:"TAKT";position:absolute;top:-13px;left:50%;transform:translateX(-50%);
   font-family:var(--disp);font-size:8px;letter-spacing:.12em;color:var(--safety);font-weight:700}
-.cz-foot{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-faint);margin-top:8px;font-family:var(--mono)}
+.tc-mark{position:absolute;top:-5px;bottom:-5px;width:2px;background:var(--cyan);box-shadow:0 0 6px var(--cyan)}
+.tc-mark::after{content:"T/C";position:absolute;bottom:-13px;left:50%;transform:translateX(-50%);
+  font-family:var(--disp);font-size:8px;letter-spacing:.12em;color:var(--cyan);font-weight:700}
+.cz-foot{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink-faint);margin-top:14px;font-family:var(--mono)}
 
-/* contadores produzido vs takt */
-.prodgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+/* contadores produzido vs demanda */
+.prodgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .pg{background:var(--app-card2);border:1px solid var(--app-line2);border-radius:9px;padding:8px 6px;text-align:center}
 .pg b{font-family:var(--mono);font-size:19px;font-weight:600;display:block;line-height:1.1}
 .pg span{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
 .pg.good b{color:var(--andon-green)} .pg.warn b{color:var(--andon-amber)} .pg.neutral b{color:var(--cyan)}
 
-/* buffers / supermercado slots */
-.flowline{display:flex;align-items:center;gap:7px;justify-content:space-between}
-.bufbox{flex:1;min-width:0;background:var(--app-card2);border:1px solid var(--app-line2);border-radius:9px;padding:7px 7px 8px;text-align:center;position:relative;transition:border-color .3s}
-.bufbox .bb-name{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.slots{display:flex;gap:3px;justify-content:center;margin:6px 0 4px;min-height:14px}
-.slt{width:13px;height:14px;border-radius:3px;border:1px dashed var(--steel-600);background:transparent;transition:.25s}
-.slt.full{border-style:solid;border-color:transparent;background:linear-gradient(180deg,#7e93b8,#54678a);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
-.bufbox .bb-num{font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
-.bufbox.z-amber{border-color:rgba(255,194,51,.6)}
-.bufbox.z-amber .bb-num{color:var(--andon-amber)}
-.bufbox.z-red{border-color:rgba(255,77,77,.7);animation:bufpulse 1s infinite}
-.bufbox.z-red .bb-num{color:var(--andon-red)}
-@keyframes bufpulse{50%{box-shadow:0 0 12px rgba(255,77,77,.35)}}
-.flow-arrow{color:var(--ink-faint);font-size:13px;flex:none}
-.machine-chip{flex:none;width:54px;text-align:center;background:linear-gradient(180deg,var(--steel-700),var(--steel-800));
-  border:1px solid var(--steel-500);border-radius:9px;padding:6px 2px 7px}
-.machine-chip .mc-led{width:8px;height:8px;border-radius:50%;margin:0 auto 4px;background:var(--steel-500)}
-.machine-chip.m-run .mc-led{background:var(--andon-green);box-shadow:0 0 7px var(--andon-green)}
-.machine-chip.m-warn .mc-led{background:var(--andon-amber);box-shadow:0 0 7px var(--andon-amber);animation:lampblink 1s infinite}
-.machine-chip.m-crit .mc-led{background:var(--andon-red);box-shadow:0 0 7px var(--andon-red);animation:lampblink .5s infinite}
-.machine-chip span{font-family:var(--disp);font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink-dim)}
-
-/* kanban */
-.kanban-row{display:flex;gap:7px;align-items:center;min-height:46px;flex-wrap:wrap}
-.kcard{width:64px;height:42px;border-radius:6px;background:linear-gradient(160deg,#ff8c2e,#e85d04);
-  color:#1d1206;font-family:var(--disp);font-weight:800;font-size:9px;letter-spacing:.06em;
-  padding:5px 7px;line-height:1.25;position:relative;box-shadow:0 4px 10px rgba(0,0,0,.4);
-  transform:rotate(-2deg);animation:kin .35s ease-out}
-.kcard:nth-child(even){transform:rotate(1.6deg)}
-.kcard::after{content:"";position:absolute;top:4px;right:6px;width:7px;height:7px;border-radius:50%;
-  background:rgba(0,0,0,.25);box-shadow:inset 0 1px 2px rgba(0,0,0,.4)}
-.kcard small{display:block;font-family:var(--mono);font-weight:600;font-size:8px;letter-spacing:0;opacity:.75}
-@keyframes kin{from{transform:scale(.6) rotate(-8deg);opacity:0}}
-.k-empty{font-size:11px;color:var(--ink-faint);font-style:italic}
+/* ===== FLUXO VERTICAL INTEGRADO (VSM + Andon das estações) ===== */
+.vflow{display:flex;flex-direction:column;gap:4px}
+.vf-buf{display:flex;align-items:center;gap:8px;background:var(--app-bg);border:1px dashed var(--app-line2);
+  border-radius:8px;padding:4px 9px;transition:border-color .3s}
+.vf-buf .vf-name{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;width:52px;flex:none}
+.vf-buf .vf-slots{display:flex;gap:3px;flex-wrap:wrap;flex:1;min-width:0}
+.vf-buf .slt{width:11px;height:13px;border-radius:3px;border:1px dashed var(--steel-600);background:transparent;transition:.25s}
+.vf-buf .slt.full{border-style:solid;border-color:transparent;background:linear-gradient(180deg,#7e93b8,#54678a);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+.vf-buf .vf-n{font-family:var(--mono);font-size:10.5px;color:var(--ink-dim);flex:none}
+.vf-buf.z-amber{border-color:rgba(255,194,51,.65)}
+.vf-buf.z-amber .vf-n{color:var(--andon-amber)}
+.vf-buf.z-red{border-color:rgba(255,77,77,.75);animation:bufpulse 1s infinite}
+.vf-buf.z-red .vf-n{color:var(--andon-red)}
+@keyframes bufpulse{50%{box-shadow:0 0 12px rgba(255,77,77,.3)}}
+.vf-sta{display:flex;align-items:center;gap:9px;background:linear-gradient(180deg,var(--steel-700),var(--steel-800));
+  border:1px solid var(--steel-500);border-radius:9px;padding:6px 10px;position:relative;overflow:hidden}
+.vf-sta .vf-led{width:9px;height:9px;border-radius:50%;background:var(--steel-500);flex:none}
+.vf-sta.s-run .vf-led{background:var(--andon-green);box-shadow:0 0 7px var(--andon-green)}
+.vf-sta.s-warn .vf-led{background:var(--andon-amber);box-shadow:0 0 7px var(--andon-amber);animation:lampblink 1s infinite}
+.vf-sta.s-crit .vf-led{background:var(--andon-red);box-shadow:0 0 7px var(--andon-red);animation:lampblink .5s infinite}
+.vf-sta b{font-family:var(--disp);font-size:12.5px;font-weight:800;letter-spacing:.05em;flex:none}
+.vf-sta .vf-eta{font-size:9.5px;color:var(--ink-dim);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vf-sta em{font-style:normal;font-family:var(--disp);font-size:9px;font-weight:700;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--ink-dim);flex:none}
+.vf-sta.s-run em{color:var(--andon-green)} .vf-sta.s-warn em{color:var(--andon-amber)} .vf-sta.s-crit em{color:var(--andon-red)}
+.vf-sta .vf-kb{font-family:var(--disp);font-size:8.5px;font-weight:800;letter-spacing:.05em;color:#1d1206;
+  background:linear-gradient(160deg,#ff8c2e,#e85d04);border-radius:5px;padding:2px 6px;flex:none}
+.vf-sta .vf-kb.pulse{animation:kpulse 1.1s infinite}
+.vf-sta .vf-prog{position:absolute;left:0;bottom:0;height:2px;background:var(--andon-green);opacity:.8;transition:width .3s}
+.vf-sta.s-warn .vf-prog{background:var(--andon-amber)}
 
 /* botões de apontamento QR */
 .scanrow{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}
@@ -277,16 +304,6 @@ button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 .autochip{margin-top:11px;text-align:center;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
   color:var(--andon-green);font-weight:700;border:1px dashed rgba(45,216,129,.4);border-radius:9px;padding:7px}
 
-/* mini andon footer (4 estações) */
-.miniandon{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.ma{background:var(--app-card2);border:1px solid var(--app-line2);border-radius:8px;padding:7px 4px;text-align:center}
-.ma .led{width:10px;height:10px;border-radius:50%;margin:0 auto 4px;background:var(--steel-500)}
-.ma.run .led{background:var(--andon-green);box-shadow:0 0 7px var(--andon-green)}
-.ma.warn .led{background:var(--andon-amber);box-shadow:0 0 7px var(--andon-amber);animation:lampblink 1s infinite}
-.ma.crit .led{background:var(--andon-red);box-shadow:0 0 7px var(--andon-red);animation:lampblink .5s infinite}
-.ma span{font-family:var(--disp);font-weight:700;font-size:10.5px;letter-spacing:.05em;color:var(--ink-dim)}
-.ma small{display:block;font-size:8px;color:var(--ink-faint);letter-spacing:.04em;margin-top:1px;text-transform:uppercase}
-
 /* log */
 .loglist{font-family:var(--mono);font-size:10.5px;line-height:1.7;color:var(--ink-dim);max-height:128px;overflow-y:auto;scrollbar-width:thin}
 .loglist div{display:flex;gap:8px;border-bottom:1px dashed rgba(38,50,74,.6);padding:2px 0}
@@ -296,13 +313,13 @@ button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 
 /* ============ CAMPO ============ */
 .pa-hero{display:flex;gap:14px;align-items:center}
-.pa-slots{flex:1}
-.pa-slots .slots{justify-content:flex-start;margin:8px 0 6px}
-.pa-slots .slt{width:30px;height:36px;border-radius:6px;border-width:2px}
-.pa-slots .slt.full{background:linear-gradient(180deg,#8fa5cc,#5c7099);box-shadow:inset 0 2px 0 rgba(255,255,255,.35),0 3px 7px rgba(0,0,0,.4)}
-.pa-slots .slt.full::after{content:"▰";display:block;text-align:center;font-size:9px;color:rgba(13,17,24,.55);margin-top:11px}
+.pa-slots{flex:1;min-width:0}
+.pa-slots .slots{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0;max-width:160px}
+.pa-slots .slt{width:25px;height:30px;border-radius:5px;border:2px dashed var(--steel-600);background:transparent;transition:.25s}
+.pa-slots .slt.full{border-style:solid;border-color:transparent;background:linear-gradient(180deg,#8fa5cc,#5c7099);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.35),0 3px 7px rgba(0,0,0,.4)}
 .zonebar{height:7px;border-radius:4px;margin-top:4px;background:linear-gradient(90deg,
-  var(--andon-red) 0 25%, var(--andon-amber) 25% 50%, var(--andon-green) 50% 100%);position:relative;opacity:.85}
+  var(--andon-red) 0 30%, var(--andon-amber) 30% 60%, var(--andon-green) 60% 100%);position:relative;opacity:.85;max-width:160px}
 .zonebar .zcur{position:absolute;top:-4px;width:3px;height:15px;background:#fff;border-radius:2px;box-shadow:0 0 6px rgba(255,255,255,.7);transition:left .4s}
 .cover-dial{flex:none;width:108px;text-align:center}
 .cover-dial svg{display:block;margin:0 auto}
@@ -319,49 +336,47 @@ button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 .qtyrow .step button:hover{color:#fff;background:var(--steel-700)}
 .qtyrow .step b{width:46px;text-align:center;font-family:var(--mono);font-size:17px}
 .qtyrow label{font-size:11.5px;color:var(--ink-dim);font-weight:600}
-.pend-chip{margin-top:9px;font-size:11px;border-radius:8px;padding:7px 10px;background:rgba(255,77,77,.1);
-  border:1px solid rgba(255,77,77,.4);color:var(--andon-red);font-weight:600;display:none}
 .sliderrow{display:flex;align-items:center;gap:11px;margin:6px 0 10px}
 input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:5px;border-radius:3px;background:var(--steel-700);outline:none}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:19px;height:19px;border-radius:50%;
   background:var(--safety);border:3px solid #1d1206;box-shadow:0 0 8px rgba(255,122,26,.5);cursor:pointer}
 input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--safety);border:3px solid #1d1206;cursor:pointer}
-.sliderrow b{font-family:var(--mono);font-size:17px;width:70px;text-align:right;flex:none}
+.sliderrow b{font-family:var(--mono);font-size:15px;width:92px;text-align:right;flex:none}
 .nextrow{display:flex;gap:8px}
 .nx{flex:1;background:var(--app-card2);border:1px solid var(--app-line2);border-radius:9px;padding:8px;text-align:center}
-.nx b{font-family:var(--mono);font-size:14px;display:block}
-.nx span{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.nx b{font-family:var(--mono);font-size:15px;display:block}
+.nx span{font-size:8.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.nx.alert b{color:var(--andon-red)}
 .flowbadge{display:flex;align-items:center;gap:9px;font-size:11.5px;color:var(--ink-dim)}
 .flowbadge .led{width:11px;height:11px;border-radius:50%;flex:none;background:var(--andon-green);box-shadow:0 0 8px rgba(45,216,129,.6)}
 .flowbadge.warn .led{background:var(--andon-amber);box-shadow:0 0 8px rgba(255,194,51,.7);animation:lampblink 1s infinite}
 .flowbadge.crit .led{background:var(--andon-red);box-shadow:0 0 8px rgba(255,77,77,.7);animation:lampblink .5s infinite}
 
-/* ============ GESTOR ============ */
-.kpigrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.kpi{background:var(--app-card2);border:1px solid var(--app-line2);border-radius:10px;padding:10px 11px;position:relative;overflow:hidden}
+/* ============ GESTÃO ============ */
+.kpigrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kpi{background:var(--app-card2);border:1px solid var(--app-line2);border-radius:10px;padding:9px 10px;position:relative;overflow:hidden}
 .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--steel-600)}
 .kpi.k-good::before{background:var(--andon-green)} .kpi.k-warn::before{background:var(--andon-amber)}
 .kpi.k-crit::before{background:var(--andon-red)} .kpi.k-info::before{background:var(--cyan)}
-.kpi .k-name{font-size:9px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-faint)}
-.kpi .k-val{font-family:var(--mono);font-size:22px;font-weight:700;line-height:1.15;margin-top:3px}
-.kpi .k-val small{font-size:11px;font-weight:500;color:var(--ink-dim)}
-.kpi .k-sub{font-size:9.5px;color:var(--ink-faint);margin-top:2px;font-family:var(--mono)}
-.kpi .k-delta{position:absolute;top:9px;right:10px;font-family:var(--mono);font-size:9.5px;font-weight:600;
-  padding:2px 6px;border-radius:5px;background:rgba(45,216,129,.12);color:var(--andon-green)}
-.kpi .k-delta.neg{background:rgba(255,77,77,.12);color:var(--andon-red)}
-.oeerow{display:flex;gap:7px;margin-top:9px}
-.oee-c{flex:1;text-align:center;background:var(--app-card2);border:1px solid var(--app-line2);border-radius:9px;padding:7px 3px}
-.oee-c b{font-family:var(--mono);font-size:14.5px;display:block}
-.oee-c span{font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
-canvas.spark{width:100%;height:64px;display:block}
-.cmp-table{width:100%;border-collapse:collapse;font-size:11px}
-.cmp-table th{font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);
-  text-align:right;padding:3px 4px;font-weight:700}
-.cmp-table th:first-child{text-align:left}
-.cmp-table td{padding:4px;border-top:1px dashed rgba(38,50,74,.7);text-align:right;font-family:var(--mono)}
-.cmp-table td:first-child{text-align:left;font-family:var(--body);color:var(--ink-dim);font-size:10.5px}
-.cmp-table .fut{color:var(--andon-green);font-weight:600}
-.cmp-table .var{color:var(--safety);font-size:10px}
+.kpi .k-name{font-size:8.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-faint);line-height:1.3;min-height:21px;display:flex;align-items:flex-end}
+.kpi .k-val{font-family:var(--mono);font-size:19px;font-weight:700;line-height:1.15;margin-top:3px;white-space:nowrap}
+.kpi .k-val small{font-size:10.5px;font-weight:500;color:var(--ink-dim)}
+.meta-table{width:100%;border-collapse:collapse;font-size:10.5px}
+.meta-table th{font-size:8px;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-faint);
+  text-align:right;padding:3px 3px;font-weight:700}
+.meta-table th:first-child{text-align:left}
+.meta-table td{padding:3px;border-top:1px dashed rgba(38,50,74,.7);text-align:right;font-family:var(--mono);font-size:10px}
+.meta-table td:first-child{text-align:left;font-family:var(--body);color:var(--ink-dim);font-size:9.5px;line-height:1.2}
+.meta-table input{width:52px;background:var(--app-bg);border:1px solid var(--app-line2);border-radius:5px;
+  color:var(--gold);font-family:var(--mono);font-size:10px;padding:3px 4px;text-align:right;outline:none}
+.meta-table input:focus{border-color:var(--gold)}
+.meta-table .mt-var{color:var(--safety);font-size:9.5px;white-space:nowrap}
+.sup-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sup{background:var(--app-card2);border:1px solid var(--app-line2);border-radius:10px;padding:9px 11px}
+.sup .s-tag{font-size:8.5px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--ink-faint)}
+.sup b{font-family:var(--mono);font-size:15px;display:block;margin-top:3px;line-height:1.3}
+.sup small{font-size:9.5px;color:var(--ink-dim);font-family:var(--mono);display:block}
+.sup .s-ok{color:var(--andon-green)}
 
 /* ===================== RODAPÉ / MODAIS ===================== */
 .deskfoot{margin-top:34px;border-top:1px solid var(--steel-700);padding-top:16px;display:flex;flex-wrap:wrap;
@@ -390,11 +405,21 @@ canvas.spark{width:100%;height:64px;display:block}
 .sum{background:var(--steel-900);border:1px solid var(--steel-700);border-radius:11px;padding:12px;text-align:center}
 .sum b{font-family:var(--mono);font-size:23px;display:block;color:var(--andon-green)}
 .sum span{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.schedbox{margin-top:16px;border:1px solid #6a4a17;border-radius:14px;padding:16px;
+  background:linear-gradient(180deg,rgba(255,209,102,.06),transparent)}
+.schedbox h4{margin-top:0!important}
+.schedrow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px}
+.schedrow label{font-size:11px;color:var(--ink-dim);font-weight:600;letter-spacing:.04em}
+.schedrow select{background:var(--steel-900);border:1px solid var(--steel-600);color:var(--ink);
+  font-family:var(--mono);font-size:13px;border-radius:9px;padding:8px 10px;outline:none}
+.schedrow .step{display:flex;align-items:center;border:1px solid var(--steel-600);border-radius:9px;overflow:hidden;background:var(--steel-900)}
+.schedrow .step button{width:34px;height:36px;background:transparent;font-size:16px;color:var(--ink-dim)}
+.schedrow .step button:hover{color:#fff;background:var(--steel-700)}
+.schedrow .step b{width:78px;text-align:center;font-family:var(--mono);font-size:14px}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);z-index:300;
   background:var(--steel-800);border:1px solid var(--steel-600);border-radius:11px;padding:10px 18px;
   font-size:13px;font-weight:600;transition:transform .3s;box-shadow:0 14px 34px rgba(0,0,0,.5);pointer-events:none}
 .toast.show{transform:translateX(-50%) translateY(0)}
-.blink-soft{animation:lampblink 1.1s infinite}
 @media(max-width:760px){
   .wrap{padding:14px 12px 50px}
   .brand h1{font-size:23px}
@@ -412,7 +437,7 @@ canvas.spark{width:100%;height:64px;display:block}
     <div class="brand-mark"></div>
     <div>
       <h1>Painel <em>Lean</em></h1>
-      <small>Simulador do protótipo de telas — mini-MES · Andon digital · fluxo puxado (Seção 4.1 do Projeto Final)</small>
+      <small>Simulador do protótipo Mini-MES — Andon digital · fluxo puxado · VSM estado futuro (Seção 4.1 do Projeto Final)</small>
     </div>
   </div>
   <div class="daychip">
@@ -422,15 +447,13 @@ canvas.spark{width:100%;height:64px;display:block}
   </div>
 </header>
 
-<!-- ============ BARRA DE CONTROLE ============ -->
+<!-- ============ BARRA DE CONTROLE (SIMULADOR) ============ -->
 <div class="controls">
   <div class="ctl-group">
+    <span class="ctl-label">Simulação</span>
     <button class="btn btn-play" id="btnPlay">▶ Iniciar turno</button>
     <button class="btn btn-ghost" id="btnSkip" title="Avança 1 hora simulada">+1 h</button>
     <button class="btn btn-ghost" id="btnReset" title="Reinicia a simulação">↺</button>
-  </div>
-  <div class="ctl-group">
-    <span class="ctl-label">Velocidade</span>
     <div class="seg" id="speedSeg">
       <button data-v="60">60×</button>
       <button data-v="120" class="on">120×</button>
@@ -439,15 +462,23 @@ canvas.spark{width:100%;height:64px;display:block}
     </div>
   </div>
   <div class="ctl-group">
-    <div class="toggle on" id="tglAuto"><span class="tk"></span>Apontamento automático</div>
-    <div class="toggle on" id="tglSound"><span class="tk"></span>🔊 Alerta sonoro</div>
+    <span class="ctl-label">Mundo simulado</span>
+    <div class="toggle on" id="tglAuto" title="Simula os operadores lendo o QR Code automaticamente">Apontamento automático<span class="tk"></span></div>
+    <div class="toggle on" id="tglRet" title="Simula a equipe de campo retirando chapas ao longo do dia">Retiradas do campo<span class="tk"></span></div>
+    <div class="mini-step" title="Chapas retiradas pelo campo por dia (distribuídas no turno)">
+      <button id="retMinus">−</button><b id="retVal">4 ch/dia</b><button id="retPlus">+</button>
+    </div>
   </div>
   <div class="ctl-group">
     <span class="ctl-label">Cenários</span>
     <button class="btn btn-scn" id="scnTakt" title="Inflaciona o ciclo da Calandragem (CCR) em +30%, acima do Takt">⚠ Ciclo &gt; Takt no CCR</button>
-    <button class="btn btn-scn" id="scnPico" title="Campo solicita +2 chapas extras imediatamente">⛏ Pico de demanda</button>
+    <button class="btn btn-scn" id="scnPico" title="Campo retira +2 chapas extras imediatamente">⛏ Pico de demanda</button>
+  </div>
+  <div class="ctl-group">
+    <div class="toggle on" id="tglSound" title="Alerta sonoro do Andon (recurso do produto Mini-MES)">🔊 Som do Andon<span class="tk"></span></div>
   </div>
 </div>
+<div class="simnote">⛭ Esta barra é o <b>ambiente de simulação</b> (substitui o mundo real: operadores, campo e relógio). O produto <b>Mini-MES</b> é o que está dentro dos três smartphones.</div>
 
 <!-- ============ PALCO: 3 SMARTPHONES ============ -->
 <div class="stage">
@@ -461,14 +492,14 @@ canvas.spark{width:100%;height:64px;display:block}
       <div class="appbody" id="bodyOp">
         <div class="apphead">
           <div class="app-id">
-            <h2>Apontamento<small>Galpão de preparo · chapas API-650 · QR Code</small></h2>
+            <h2>Mini-MES – Fabricação<small>Pipe shop – Fluxo de Fabricação – Apontamento</small></h2>
             <span class="role-emblem emblem-op">OPERAÇÃO</span>
           </div>
         </div>
 
         <div class="andon-strip andon-green" id="andonOp">
           <div class="lamp"></div>
-          <div class="a-txt"><b id="andonOpTitle">Fluxo normal</b><span id="andonOpMsg">Produção puxada no ritmo do Takt.</span></div>
+          <div class="a-txt"><b id="andonOpTitle">Regular</b><span id="andonOpMsg">Fluxo puxado dentro dos parâmetros.</span></div>
         </div>
 
         <div class="sta-tabs" id="staTabs">
@@ -480,21 +511,21 @@ canvas.spark{width:100%;height:64px;display:block}
 
         <div class="card">
           <div class="sta-state">
-            <div class="st-name" id="stName">Calandragem<small id="stSub">CCR · Processo Puxador · T/C 5.700 s</small></div>
-            <span class="st-badge stb-idle" id="stBadge">OCIOSA</span>
+            <div class="st-name"><span id="stName">Calandragem</span><span class="kbadge" id="stKanban" style="display:none">⬖ 0 KANBAN</span><small id="stSub">CCR · Processo Puxador · T/C 5.700 s</small></div>
+            <span class="st-badge stb-idle" id="stBadge">AGUARDA PUXADA</span>
           </div>
           <div class="cycle-zone">
-            <div class="cz-top"><span>Ciclo da chapa atual: <b id="czCur">—</b></span><span>Takt <b>2h00</b></span></div>
+            <div class="cz-top"><span>Tempo de Processamento: <b id="czCur">—</b></span><span>Takt <b id="czTaktLbl">2h00</b></span></div>
             <div class="cycle-track">
               <div class="cycle-fill" id="czFill"></div>
-              <div class="takt-mark" id="czTakt" style="left:96%"></div>
+              <div class="tc-mark" id="czTc" style="left:70%"></div>
+              <div class="takt-mark" id="czTakt" style="left:89%"></div>
             </div>
             <div class="cz-foot"><span id="czChapa">sem chapa na estação</span><span id="czPct">0% do takt</span></div>
           </div>
           <div class="prodgrid">
             <div class="pg neutral"><b id="pgProd">0</b><span>Produzidas hoje</span></div>
-            <div class="pg"><b id="pgMeta">0</b><span>Ritmo do takt</span></div>
-            <div class="pg good"><b id="pgSaldo">0</b><span>Saldo</span></div>
+            <div class="pg"><b id="pgMeta">4</b><span>Demanda dia</span></div>
           </div>
           <div class="scanrow" id="scanRow">
             <button class="scanbtn" id="btnIn"><span class="scanline"></span><span class="qr"></span>Apontar entrada<small id="inHint">—</small></button>
@@ -504,96 +535,87 @@ canvas.spark{width:100%;height:64px;display:block}
         </div>
 
         <div class="card">
-          <div class="card-title">Fila de Kanban — processo puxador <span class="hint" id="kanbanCount">0 cartões</span></div>
-          <div class="kanban-row" id="kanbanRow"><span class="k-empty">Sem kanban pendente — aguardando puxada do campo.</span></div>
+          <div class="card-title">Fluxo & Andon — VSM estado futuro <span class="hint">estoques controlados</span></div>
+          <div class="vflow" id="flowOp"></div>
         </div>
 
         <div class="card">
-          <div class="card-title">Fluxo do VSM futuro — estoques controlados</div>
-          <div class="flowline" id="flowLine"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Andon das estações</div>
-          <div class="miniandon" id="miniAndon"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Últimos apontamentos</div>
+          <div class="card-title">Registros
+            <span class="logseg" id="segOp"><button data-m="op" class="on">Fabricação</button><button data-m="all">Geral</button></span>
+          </div>
           <div class="loglist" id="logOp"></div>
         </div>
       </div>
     </div></div>
-    <div class="slot-sub">Aponta entrada/saída por QR Code em cada etapa, acompanha takt, kanban e o Andon — produz somente o que o campo puxa.</div>
+    <div class="slot-sub">Aponta entrada/saída por QR Code em cada etapa, acompanha o tempo de processamento vs takt e o Andon — produz somente o que o campo puxa.</div>
   </div>
 
-  <!-- ===== PERFIL 2: CAMPO (MONTAGEM) ===== -->
+  <!-- ===== PERFIL 2: CAMPO ===== -->
   <div class="slot">
-    <div class="slot-tag"><span class="dot"></span>Perfil 2 · Campo (Montagem)</div>
+    <div class="slot-tag"><span class="dot"></span>Perfil 2 · Campo</div>
     <div class="phone"><div class="screen">
       <div class="notch"></div>
       <div class="statusbar"><span id="sbClock2">07:00</span><span class="sb-icons">▂▄▆ <span>4G</span> ▮▮▱▱</span></div>
       <div class="appbody">
         <div class="apphead">
           <div class="app-id">
-            <h2>Módulo de Campo<small>Obra TQ-302 · montagem de tanque API-650 · anel 3</small></h2>
+            <h2>Mini-MES – Montagem<small>Expedição – Campo – Montagem de Tanque</small></h2>
             <span class="role-emblem emblem-campo">CAMPO</span>
           </div>
         </div>
 
         <div class="andon-strip andon-green" id="andonCampo">
           <div class="lamp"></div>
-          <div class="a-txt"><b id="andonCampoTitle">Abastecimento garantido</b><span id="andonCampoMsg">Supermercado de PA dentro da zona verde.</span></div>
+          <div class="a-txt"><b id="andonCampoTitle">Regular</b><span id="andonCampoMsg">Estoque de PA dentro da zona verde.</span></div>
         </div>
 
         <div class="card">
-          <div class="card-title">Supermercado de produto acabado <span class="hint">máx. 4 chapas · 1 dia</span></div>
+          <div class="card-title">Disponível para retirada <span class="hint">máx. 10 chapas · 2,5 dias</span></div>
           <div class="pa-hero">
             <div class="pa-slots">
               <div class="slots" id="paSlots"></div>
               <div class="zonebar"><div class="zcur" id="paZcur"></div></div>
-              <div class="bb-num" style="margin-top:6px;font-family:var(--mono);font-size:12px;color:var(--ink-dim)">
-                <span id="paCount">3</span>/4 chapas · <span id="paTon">2,19</span> t prontas
+              <div style="margin-top:6px;font-family:var(--mono);font-size:12px;color:var(--ink-dim)">
+                <span id="paCount">9</span>/10 chapas · <span id="paTon">6,57</span> t prontas
               </div>
             </div>
             <div class="cover-dial">
               <svg width="104" height="104" viewBox="0 0 104 104">
                 <circle cx="52" cy="52" r="44" fill="none" stroke="#1b2435" stroke-width="9"/>
                 <circle id="coverArc" cx="52" cy="52" r="44" fill="none" stroke="#2dd881" stroke-width="9"
-                  stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="69" transform="rotate(-90 52 52)"/>
+                  stroke-linecap="round" stroke-dasharray="276.5" stroke-dashoffset="28" transform="rotate(-90 52 52)"/>
               </svg>
-              <div class="cv-num" id="coverNum">0,75</div>
+              <div class="cv-num" id="coverNum">2,25</div>
               <div class="cv-unit">dias de cobertura</div>
             </div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title">Solicitar retirada <span class="hint">kanban de retirada → expedição</span></div>
+          <div class="card-title">Retirada <span class="hint">registro no ato da retirada do PA</span></div>
           <div class="qtyrow">
             <label>Quantidade de chapas</label>
             <div class="step">
               <button id="qMinus">−</button><b id="qVal">2</b><button id="qPlus">+</button>
             </div>
           </div>
-          <button class="bigbtn" id="btnRetirar">⤓ Solicitar retirada</button>
-          <div class="pend-chip" id="pendChip">⏳ <b id="pendN">0</b> chapa(s) pendente(s) — fabricação priorizando reposição</div>
+          <button class="bigbtn" id="btnRetirar">⤓ Retirada</button>
           <div class="nextrow" style="margin-top:10px">
-            <div class="nx"><b id="nxManha">10:00 · 2 ch</b><span>Retirada manhã</span></div>
-            <div class="nx"><b id="nxTarde">15:00 · 2 ch</b><span>Retirada tarde</span></div>
             <div class="nx"><b id="nxHoje">0</b><span>Recebidas hoje</span></div>
+            <div class="nx" id="nxPendBox"><b id="nxPend">0</b><span>Pendentes</span></div>
+            <div class="nx"><b id="nxUlt">—</b><span>Última retirada</span></div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title">Previsão de demanda → PCP <span class="hint">nivela as retiradas de amanhã</span></div>
+          <div class="card-title">Previsão de demanda → PCP <span class="hint">semanal · informativa</span></div>
           <div class="sliderrow">
-            <input type="range" id="fcRange" min="2" max="6" step="1" value="4">
-            <b id="fcVal">4 ch/dia</b>
+            <input type="range" id="fcRange" min="8" max="40" step="1" value="20">
+            <b id="fcVal">20 ch/sem</b>
           </div>
-          <button class="btn" id="btnFc" style="width:100%;justify-content:center">📡 Enviar previsão ao PCP</button>
+          <button class="btn" id="btnFc" style="width:100%;justify-content:center">📡 Enviar previsão semanal ao PCP</button>
           <div style="font-size:10px;color:var(--ink-faint);margin-top:7px;line-height:1.5" id="fcNote">
-            Previsão vigente: 4 chapas/dia (Takt 7.200 s). O PCP consolida e envia previsões de 30/60 dias ao fornecedor.
+            Sem previsão enviada nesta semana. O envio substitui o valor anterior e o registro reseta toda segunda-feira.
           </div>
         </div>
 
@@ -603,92 +625,89 @@ canvas.spark{width:100%;height:64px;display:block}
         </div>
 
         <div class="card">
-          <div class="card-title">Movimentações do dia</div>
+          <div class="card-title">Registros
+            <span class="logseg" id="segCampo"><button data-m="campo" class="on">Campo</button><button data-m="all">Geral</button></span>
+          </div>
           <div class="loglist" id="logCampo"></div>
         </div>
       </div>
     </div></div>
-    <div class="slot-sub">Cliente interno que puxa o fluxo: vê o supermercado de PA e a cobertura, solicita retiradas e envia a previsão de demanda ao PCP.</div>
+    <div class="slot-sub">Cliente interno que puxa o fluxo: registra retiradas no ato, acompanha o disponível e a cobertura, e envia a previsão semanal ao PCP.</div>
   </div>
 
-  <!-- ===== PERFIL 3: GESTOR ===== -->
+  <!-- ===== PERFIL 3: GESTÃO ===== -->
   <div class="slot">
-    <div class="slot-tag"><span class="dot"></span>Perfil 3 · Gestor</div>
+    <div class="slot-tag"><span class="dot"></span>Perfil 3 · Gestão</div>
     <div class="phone"><div class="screen">
       <div class="notch"></div>
       <div class="statusbar"><span id="sbClock3">07:00</span><span class="sb-icons">▂▄▆ <span>5G</span> ▮▮▮▮</span></div>
       <div class="appbody">
         <div class="apphead">
           <div class="app-id">
-            <h2>Painel do Gestor<small>Indicadores do fluxo em tempo real · VSM estado futuro</small></h2>
-            <span class="role-emblem emblem-gestor">GESTOR</span>
+            <h2>Mini-MES – Gestão<small>Indicadores do fluxo em tempo real · VSM estado futuro</small></h2>
+            <span class="role-emblem emblem-gestor">ADM</span>
           </div>
         </div>
 
         <div class="andon-strip andon-green" id="andonGestor">
           <div class="lamp"></div>
-          <div class="a-txt"><b id="andonGestorTitle">Fluxo saudável</b><span id="andonGestorMsg">Todos os indicadores dentro das metas do estado futuro.</span></div>
+          <div class="a-txt"><b id="andonGestorTitle">Regular</b><span id="andonGestorMsg">Todas as funções monitoradas na zona verde.</span></div>
         </div>
 
         <div class="card">
-          <div class="card-title">Indicadores de fluxo <span class="hint" id="kpiStamp">ao vivo</span></div>
-          <div class="kpigrid">
-            <div class="kpi k-good" id="kpiLT"><div class="k-name">Lead Time</div><div class="k-val" id="ltVal">6,07<small> dias</small></div><div class="k-sub">meta ≤ 6,07 d · era 13,16 d</div></div>
-            <div class="kpi k-good" id="kpiECP"><div class="k-name">Eficiência do Ciclo</div><div class="k-val" id="ecpVal">8,75<small> %</small></div><div class="k-sub">meta ≥ 8,75% · era 4,04%</div></div>
-            <div class="kpi k-good" id="kpiWIP"><div class="k-name">WIP total</div><div class="k-val" id="wipVal">21<small> ch</small></div><div class="k-sub" id="wipSub">15,3 t · alvo ≤ 22 ch</div></div>
-            <div class="kpi k-info" id="kpiThru"><div class="k-name">Expedido hoje</div><div class="k-val" id="thruVal">0<small> / 4 ch</small></div><div class="k-sub" id="aderSub">aderência 100%</div></div>
-            <div class="kpi k-good" id="kpiFolga"><div class="k-name">Folga CCR s/ Takt</div><div class="k-val" id="folgaVal">20,8<small> %</small></div><div class="k-sub" id="folgaSub">T/C 5.700 s vs TT 7.200 s</div></div>
-            <div class="kpi k-good" id="kpiCob"><div class="k-name">Cobertura PA</div><div class="k-val" id="cobVal">0,75<small> dia</small></div><div class="k-sub" id="cobSub">3 ch · consumo 4 ch/d</div></div>
+          <div class="card-title">Funções Andon</div>
+          <div class="achips" id="achips"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Indicadores de fluxo <span class="hint">ao vivo</span></div>
+          <div class="kpigrid" id="kpiGrid"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Status da operação <span class="hint">estações & estoques</span></div>
+          <div class="vflow" id="flowGes"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Abastecimento & previsão</div>
+          <div class="sup-grid">
+            <div class="sup">
+              <div class="s-tag">Entrega do fornecedor</div>
+              <b id="supEntrega">Seg · 20 ch</b>
+              <small id="supEntregaSub">14,6 t · agendada</small>
+            </div>
+            <div class="sup">
+              <div class="s-tag">Previsão do campo (semana)</div>
+              <b id="supPrev">—</b>
+              <small id="supPrevSub">aguardando envio</small>
+            </div>
           </div>
         </div>
 
         <div class="card">
-          <div class="card-title">OEE — Calandragem (CCR · Tambor) <span class="hint" id="oeeStamp"></span></div>
-          <div class="kpi k-info" style="margin-bottom:0">
-            <div class="k-name">OEE global</div><div class="k-val" id="oeeVal">100<small> %</small></div>
-            <div class="k-sub" id="oeeSub">ocupação do CCR hoje: —</div>
-          </div>
-          <div class="oeerow">
-            <div class="oee-c"><b id="oeeDisp">100%</b><span>Disponib.</span></div>
-            <div class="oee-c"><b id="oeePerf">100%</b><span>Performance</span></div>
-            <div class="oee-c"><b id="oeeQual">100%</b><span>Qualidade</span></div>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">WIP & supermercado PA — turno <span class="hint">amostra 5 min</span></div>
-          <canvas class="spark" id="sparkCanvas" width="640" height="128"></canvas>
-          <div style="display:flex;gap:14px;font-size:9.5px;color:var(--ink-faint);margin-top:5px">
-            <span><span style="color:var(--cyan)">━</span> WIP total (alvo ≤ 22)</span>
-            <span><span style="color:var(--andon-green)">━</span> PA (máx 4)</span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Estado atual → estado futuro <span class="hint">ganhos do VSM</span></div>
-          <table class="cmp-table">
-            <tr><th>Indicador</th><th>Atual</th><th>Futuro</th><th>Δ</th></tr>
-            <tr><td>Lead Time</td><td>13,16 d</td><td class="fut">6,07 d</td><td class="var">−53,9%</td></tr>
-            <tr><td>WIP</td><td>50 ch</td><td class="fut">22 ch</td><td class="var">−56%</td></tr>
-            <tr><td>ECP</td><td>4,04%</td><td class="fut">8,75%</td><td class="var">+116,5%</td></tr>
-            <tr><td>Muda transporte</td><td>3.600 s</td><td class="fut">1.200 s</td><td class="var">−66,7%</td></tr>
-            <tr><td>Folga CCR s/ TT</td><td>12,5%</td><td class="fut">20,8%</td><td class="var">+66%</td></tr>
+          <div class="card-title">Indicadores → objetivos <span class="hint">atual ao vivo · objetivo editável</span></div>
+          <table class="meta-table" id="metaTable">
+            <thead><tr><th>Indicador</th><th>Atual</th><th>Objetivo</th><th>Δ%</th></tr></thead>
+            <tbody></tbody>
           </table>
         </div>
 
         <div class="card">
-          <div class="card-title">Linha do tempo de eventos · Andon</div>
+          <div class="card-title">Registros
+            <span class="logseg" id="segGes"><button data-m="op">Perfil 1</button><button data-m="campo">Perfil 2</button><button data-m="all" class="on">Geral</button></span>
+          </div>
           <div class="loglist" id="logGestor" style="max-height:150px"></div>
         </div>
       </div>
     </div></div>
-    <div class="slot-sub">Visão executiva: LT, ECP, WIP, OEE do CCR, folga sobre o takt, cobertura e aderência — com trilha de eventos Andon.</div>
+    <div class="slot-sub">Visão executiva completa: todos os indicadores do fluxo, funções Andon, status da operação, abastecimento e metas — com registros filtráveis por perfil.</div>
   </div>
 </div>
 
 <!-- ============ RODAPÉ ============ -->
 <footer class="deskfoot">
-  <span>MVP conceitual (Seção 3.2): <b style="color:var(--ink)">apontamento QR</b> · <b style="color:var(--ink)">painel com Andon</b> · <b style="color:var(--ink)">módulo de campo</b> — operando o VSM do estado futuro (sistema puxado híbrido: supermercado + FIFO + pulmão DBR).</span>
+  <span>MVP (Seção 3.2): <b style="color:var(--ink)">apontamento QR</b> · <b style="color:var(--ink)">painel com Andon</b> · <b style="color:var(--ink)">módulo de campo</b> — operando o VSM futuro com supermercado de PA de 2,5 dias (10 ch), FIFOs e pulmão DBR no CCR.</span>
   <div class="links">
     <button class="btn btn-ghost" id="btnMem">ƒ Memória de cálculo</button>
     <button class="btn btn-ghost" id="btnSobre">ⓘ Sobre o protótipo</button>
@@ -701,39 +720,42 @@ canvas.spark{width:100%;height:64px;display:block}
   <div class="modal">
     <button class="m-close" data-close>✕</button>
     <h3>Memória de <em>cálculo</em></h3>
-    <div class="m-sub">Formulações teóricas com notação bruta antes da substituição — base: Tabelas 1–3 e VSM futuro do estudo Lean.</div>
+    <div class="m-sub">Formulações teóricas com notação bruta antes da substituição — parâmetros do VSM futuro adotado no simulador (PA de 2,5 dias).</div>
     <h4>Takt Time</h4>
-    <p><code class="formula">TT = TD / D = 28.800 s ÷ 4 ch/dia = 7.200 s/ch (2 h/ch)</code></p>
-    <h4>Lead Time (Lei de Little, em dias úteis)</h4>
-    <p><code class="formula">LT = (WIP<sub>estoques</sub> / D) + (Σ TP / TD) = (22 ÷ 4) + (16.500 ÷ 28.800) = 5,50 + 0,57 = 6,07 dias</code></p>
-    <p>No simulador o LT é recalculado a cada instante com o WIP corrente dos 5 pontos de estoque (MP, pulmão, 2 FIFOs, PA).</p>
-    <h4>Eficiência do Ciclo de Processo</h4>
-    <p><code class="formula">ECP = Σ TAV / LT = 15.300 s ÷ (6,07 × 28.800 s) = 15.300 ÷ 174.816 = 8,75%</code></p>
+    <p><code class="formula">TT = TD / D = 28.800 s ÷ 4 ch/dia = 7.200 s/ch = 120 min/ch (2 h/ch)</code></p>
+    <h4>Lead Time de Produção (Lei de Little, em dias úteis)</h4>
+    <p><code class="formula">LT = (WIP<sub>estoques</sub> / D) + (Σ TC / TD) = (28 ÷ 4) + (16.500 ÷ 28.800) = 7,00 + 0,57 = 7,57 dias</code></p>
+    <p>WIP nominal de estoques: MP 10 (2,5 d) + pulmão 4 (1 d) + FIFO 2 (0,5 d) + FIFO 2 (0,5 d) + PA 10 (2,5 d) = <b>28 chapas</b>. O simulador recalcula o LT a cada instante com o WIP corrente.</p>
+    <h4>Tempo de Processamento, Agregação de Valor e Muda</h4>
+    <p><code class="formula">Σ TC = 3.900 + 5.700 + 3.300 + 3.600 = 16.500 s = 275 min</code></p>
+    <p><code class="formula">Σ TAV = 3.600 + 5.400 + 3.000 + 3.300 = 15.300 s = 255 min</code></p>
+    <p><code class="formula">Muda de Processamento = Σ TC − Σ TAV = 16.500 − 15.300 = 1.200 s = 20 min</code></p>
+    <h4>Eficiência do Ciclo de Produção</h4>
+    <p><code class="formula">ECP = Σ TAV / LT = 15.300 ÷ (7,57 × 28.800) = 15.300 ÷ 218.100 = 7,02%</code></p>
     <h4>Folga do CCR sobre o Takt</h4>
     <p><code class="formula">Folga = (TT − TC<sub>CCR</sub>) / TT = (7.200 − 5.700) ÷ 7.200 = 20,8%</code></p>
-    <h4>Capacidade do CCR</h4>
-    <p><code class="formula">Cap = TD / TC<sub>CCR</sub> = 28.800 ÷ 5.700 = 5,05 ch/dia (demanda: 4 ch/dia)</code></p>
-    <h4>OEE do CCR</h4>
-    <p><code class="formula">OEE = Disponibilidade × Performance × Qualidade</code></p>
-    <p>Performance = TC<sub>ideal</sub> / TC<sub>real</sub> (no cenário "Ciclo &gt; Takt": 5.700 ÷ 7.410 = 76,9%). Disponibilidade e Qualidade = 100% (premissa do estudo).</p>
-    <h4>Cobertura do supermercado de PA</h4>
-    <p><code class="formula">Cobertura = Estoque PA / D = 4 ÷ 4 = 1,0 dia (máximo do supermercado)</code></p>
-    <h4>Zonas Andon de estoque (hipótese do projeto)</h4>
+    <h4>Coberturas de estoque</h4>
+    <p><code class="formula">Cobertura PA = Estoque PA / D = 10 ÷ 4 = 2,5 dias (padrão)</code></p>
+    <p><code class="formula">Cobertura Total = WIP total / D = 28 ÷ 4 = 7,0 dias</code></p>
+    <h4>Zonas Andon — padrão Regular / Atenção / Crítico</h4>
     <table>
-      <tr><th>Ponto de estoque</th><th>Verde</th><th>Amarelo</th><th>Vermelho</th></tr>
-      <tr><td>Supermercado PA (máx 4)</td><td>≥ 3 ch</td><td>2 ch</td><td>≤ 1 ch</td></tr>
-      <tr><td>Pulmão do CCR (máx 4)</td><td>≥ 3 ch</td><td>2 ch</td><td>≤ 1 ch</td></tr>
-      <tr><td>Estoque MP (médio 10)</td><td>≥ 6 ch</td><td>3–5 ch</td><td>≤ 2 ch</td></tr>
+      <tr><th>Função monitorada</th><th>Regular 🟢</th><th>Atenção 🟡</th><th>Crítico 🔴</th><th>Alerta para</th></tr>
+      <tr><td>Estoque PA (máx 10)</td><td>≥ 1,5 d (≥ 6 ch)</td><td>1 a 1,5 d (4–5 ch)</td><td>&lt; 1 d (≤ 3 ch)</td><td>P1 · P2 · P3</td></tr>
+      <tr><td>Pulmão do CCR (máx 4)</td><td>≥ 3 ch</td><td>2 ch</td><td>≤ 1 ch</td><td>P1 · P3</td></tr>
+      <tr><td>Estoque MP</td><td>≥ 6 ch</td><td>3–5 ch</td><td>≤ 2 ch</td><td>P1 · P3</td></tr>
+      <tr><td>TC do CCR vs Takt</td><td>TC ≤ TT</td><td>TC &gt; TT</td><td>CCR sem abastecimento</td><td>P1 · P3</td></tr>
     </table>
-    <p>Ao cruzar a zona, o Andon dispara alerta visual + sonoro na Operação: <b>amarelo</b> = ponto de reposição (priorizar fluxo); <b>vermelho</b> = risco de desabastecer o campo / inanição do CCR. O alerta <b>não autoriza produzir além dos limites</b> dos supermercados — a resposta correta é proteger o CCR e expedir os kanbans pendentes.</p>
+    <p>O Andon de estoque cruza a zona e dispara alerta visual + sonoro. <b>Não autoriza produzir além dos limites</b> dos supermercados — a resposta correta é proteger o CCR e escoar os kanbans pendentes. O vermelho do PA (&lt; 1 dia) preserva margem: a reposição via CCR + FIFOs leva ≈ 3,5 h úteis.</p>
     <h4>Dados das estações (estado futuro)</h4>
     <table>
-      <tr><th>Etapa</th><th>TAV (s)</th><th>TM (s)</th><th>T/C (s)</th></tr>
-      <tr><td>E1 Esquadrejamento/Corte</td><td>3.600</td><td>300</td><td>3.900</td></tr>
-      <tr><td>E2 Calandragem (CCR)</td><td>5.400</td><td>300</td><td>5.700</td></tr>
-      <tr><td>E3 Biselamento</td><td>3.000</td><td>300</td><td>3.300</td></tr>
-      <tr><td>E4 Pintura</td><td>3.300</td><td>300</td><td>3.600</td></tr>
+      <tr><th>Etapa</th><th>TAV (s)</th><th>TM (s)</th><th>T/C (s)</th><th>T/C (min)</th></tr>
+      <tr><td>E1 Esquadrejamento/Corte</td><td>3.600</td><td>300</td><td>3.900</td><td>65</td></tr>
+      <tr><td>E2 Calandragem (CCR)</td><td>5.400</td><td>300</td><td>5.700</td><td>95</td></tr>
+      <tr><td>E3 Biselamento</td><td>3.000</td><td>300</td><td>3.300</td><td>55</td></tr>
+      <tr><td>E4 Pintura</td><td>3.300</td><td>300</td><td>3.600</td><td>60</td></tr>
     </table>
+    <h4>Nota de coerência com o artigo</h4>
+    <p>O artigo dimensiona o PA em 1 dia (4 ch), com LT 6,07 d e ECP 8,75%. O simulador adota PA de <b>2,5 dias (10 ch)</b> — decisão de robustez do abastecimento ao campo — resultando em LT 7,57 d e ECP 7,02%. O ganho vs. estado atual permanece expressivo: LT −42,5% (13,16 → 7,57 d) e ECP +73,8% (4,04 → 7,02%), com WIP −44% (50 → 28 ch).</p>
   </div>
 </div>
 
@@ -742,25 +764,29 @@ canvas.spark{width:100%;height:64px;display:block}
   <div class="modal">
     <button class="m-close" data-close>✕</button>
     <h3>Sobre o <em>protótipo</em></h3>
-    <div class="m-sub">Simulador navegável do MVP descrito no Projeto Final — substitui o protótipo estático de telas por uma operação viva do VSM futuro.</div>
+    <div class="m-sub">Simulador navegável do MVP descrito no Projeto Final — uma operação viva do VSM futuro em três perfis de acesso.</div>
+    <h4>Produto vs. ambiente de simulação</h4>
+    <p><b>O produto Mini-MES é o que está dentro dos smartphones</b>: apontamento por QR Code, painéis Andon (Regular/Atenção/Crítico, com alerta sonoro), indicadores de fluxo, registro de retiradas e previsão de demanda. <b>A barra superior é o ambiente de simulação</b>, que substitui o mundo real: relógio acelerado, operadores apontando automaticamente, equipe de campo retirando chapas ao longo do dia e cenários de distúrbio. Em produção, esses eventos viriam do chão de fábrica e da obra — aqui, são gerados para demonstrar o software.</p>
     <h4>O que está sendo simulado</h4>
-    <p>Um turno de 8 h (07:00–17:00, almoço 12:00–13:00) do galpão de preparo de chapas de aço (730 kg/un) para tanques API-650, operando o <b>VSM do estado futuro</b>: supermercado de PA (máx 4), FIFOs de 2 chapas entre E2→E3→E4, pulmão de 1 dia protegendo a Calandragem (CCR/Tambor — processo puxador) e estoque de MP preservado (entrega de 20 chapas às segundas).</p>
+    <p>Turnos de 8 h (07:00–17:00, almoço 12:00–13:00) do galpão de preparo de chapas de aço (730 kg/un) para tanques API-650, operando o <b>VSM do estado futuro</b>: supermercado de PA de 2,5 dias (máx 10 ch), FIFOs de 2 chapas entre E2→E3→E4, pulmão de 1 dia protegendo a Calandragem (CCR/Tambor — processo puxador) e estoque de MP reposto por entrega semanal agendada.</p>
     <h4>Lógica puxada implementada</h4>
     <ul style="padding-left:18px">
-      <li>O campo retira do PA (2 ch manhã + 2 ch tarde, ou sob demanda) → cada retirada gera um <b>kanban de produção</b> para a Calandragem.</li>
+      <li>O campo registra a retirada no ato (manual, por conveniência da montagem) → cada chapa retirada gera um <b>kanban de produção</b> para a Calandragem.</li>
       <li>A Calandragem só produz com kanban pendente, chapa no pulmão e vaga no FIFO — nunca além dos limites.</li>
       <li>E3 e E4 escoam por FIFO; E1 repõe o pulmão puxando da MP.</li>
+      <li>Toda sexta, no fim do expediente, o planejamento agenda com o fornecedor a <b>quantidade e o dia da entrega</b> de MP da semana seguinte.</li>
+      <li>O campo envia ao PCP uma <b>previsão semanal</b> de consumo (informativa; substitui a anterior e reseta na segunda-feira).</li>
     </ul>
     <h4>Perfis de acesso</h4>
-    <p><b>Operação</b> — apontamento de entrada/saída por QR Code, takt vs ciclo, fila kanban, Andon. <b>Campo (Montagem)</b> — supermercado de PA, cobertura, retiradas e previsão de demanda ao PCP. <b>Gestor</b> — LT, ECP, WIP, OEE do CCR, folga sobre takt, aderência e trilha de eventos.</p>
-    <h4>Cenários demonstráveis</h4>
-    <p><b>Ciclo &gt; Takt no CCR</b>: Andon amarelo de ritmo + queda de performance no OEE. <b>Pico de demanda</b>: retirada extra do campo derruba a cobertura e aciona o Andon de estoque. <b>Andon de estoque</b> (hipótese do projeto): zonas verde/amarela/vermelha nos supermercados controlados alertam a fabricação antes do desabastecimento do campo.</p>
+    <p><b>Operação (Fabricação)</b> — apontamento QR, tempo de processamento vs takt e T/C, fluxo & Andon integrados, registros. <b>Campo (Montagem)</b> — disponível para retirada, cobertura, registro de retirada, previsão semanal, registros. <b>Gestão (ADM)</b> — todos os indicadores, funções Andon, status da operação, abastecimento & previsão, objetivos editáveis e registros filtráveis por perfil.</p>
+    <h4>Andon padronizado</h4>
+    <p>Três níveis em todos os perfis: 🟢 <b>Regular</b>, 🟡 <b>Atenção</b>, 🔴 <b>Crítico</b>. Escopo por perfil: estoque MP (P1, P3), estoque PA (P1, P2, P3), pulmão do CCR (P1, P3) e TC do CCR vs Takt (P1, P3). Mensagens do Andon aparecem nos Registros de todos os perfis, em qualquer filtro.</p>
     <h4>Vínculo com o Projeto Final</h4>
-    <p>Entrega da Seção 4.1 (protótipo navegável das 3 funcionalidades do MVP — Seção 3.2), sustentando os ganhos projetados: LT 13,16 → 6,07 dias, WIP 50 → 22 chapas, ECP 4,04% → 8,75%.</p>
+    <p>Entrega da Seção 4.1 (protótipo navegável das 3 funcionalidades do MVP — Seção 3.2). Com o PA revisado para 2,5 dias: LT 7,57 d (−42,5% vs. atual), WIP 28 ch (−44%) e ECP 7,02% (+73,8%).</p>
   </div>
 </div>
 
-<!-- ============ MODAL: RESUMO DO DIA ============ -->
+<!-- ============ MODAL: RESUMO DO DIA / AGENDAMENTO ============ -->
 <div class="modal-bg" id="modSum">
   <div class="modal">
     <button class="m-close" data-close>✕</button>
@@ -769,13 +795,28 @@ canvas.spark{width:100%;height:64px;display:block}
     <div class="sum-grid">
       <div class="sum"><b id="sumExp">0</b><span>Chapas expedidas</span></div>
       <div class="sum"><b id="sumAder">100%</b><span>Aderência à demanda</span></div>
-      <div class="sum"><b id="sumWip">22</b><span>WIP final (ch)</span></div>
-      <div class="sum"><b id="sumLT">6,07</b><span>Lead time (dias)</span></div>
-      <div class="sum"><b id="sumECP">8,75%</b><span>ECP</span></div>
+      <div class="sum"><b id="sumWip">28</b><span>WIP final (ch)</span></div>
+      <div class="sum"><b id="sumLT">7,57</b><span>Lead time (dias)</span></div>
+      <div class="sum"><b id="sumECP">7,02%</b><span>ECP</span></div>
       <div class="sum"><b id="sumAndon">0</b><span>Eventos Andon</span></div>
     </div>
-    <p id="sumNote" style="margin-bottom:14px"></p>
-    <button class="btn btn-play" id="btnNextDay" style="width:100%;justify-content:center">▶ Iniciar próximo dia</button>
+    <p id="sumNote" style="margin-bottom:4px"></p>
+    <div class="schedbox" id="schedSec" style="display:none">
+      <h4>📦 Agendamento com o fornecedor — semana seguinte</h4>
+      <p style="font-size:12px">Sexta-feira, fim do expediente: o planejamento informa a quantidade de chapas que entrará no fluxo (estoque MP) e o dia da entrega.</p>
+      <div class="schedrow">
+        <label>Dia da entrega</label>
+        <select id="schedDia">
+          <option value="0">Segunda</option><option value="1">Terça</option><option value="2">Quarta</option>
+          <option value="3">Quinta</option><option value="4">Sexta</option>
+        </select>
+        <label>Quantidade</label>
+        <div class="step"><button id="schedMinus">−</button><b id="schedQtd">20 ch</b><button id="schedPlus">+</button></div>
+        <span style="font-family:var(--mono);font-size:12px;color:var(--ink-dim)" id="schedPeso">14,6 t</span>
+      </div>
+      <p style="font-size:11px;margin-top:8px;color:var(--ink-faint)" id="schedHint"></p>
+    </div>
+    <button class="btn btn-play" id="btnNextDay" style="width:100%;justify-content:center;margin-top:14px">▶ Iniciar próximo dia</button>
   </div>
 </div>
 
@@ -783,49 +824,48 @@ canvas.spark{width:100%;height:64px;display:block}
 
 <script>
 /* ════════════════════════════════════════════════════════════
-   PAINEL LEAN — motor de simulação (VSM estado futuro)
+   PAINEL LEAN v2 — motor de simulação (VSM estado futuro)
    Unidades internas: segundos simulados. Dia: 07:00 → 17:00.
+   PA: 2,5 dias (10 ch) · retiradas manuais/automáticas ·
+   entrega de MP agendada às sextas · previsão semanal
    ════════════════════════════════════════════════════════════ */
 /*ENGINE-START*/
 const CFG = {
-  TT: 7200, TD: 28800, DEMANDA: 4, TAV_TOTAL: 15300, TP_TOTAL: 16500,
+  TD: 28800, DEMANDA: 4, TAV_TOTAL: 15300,
   DAY_START: 7*3600, DAY_END: 17*3600, LUNCH_A: 12*3600, LUNCH_B: 13*3600,
   TON: 0.73,
   STATIONS: [
-    {id:'E1', nome:'Esquadrej./Corte', sub:'T/C 3.900 s · repõe o pulmão', tc:3900, tav:3600},
-    {id:'E2', nome:'Calandragem', sub:'CCR · Processo Puxador · T/C 5.700 s', tc:5700, tav:5400, ccr:true},
-    {id:'E3', nome:'Biselamento', sub:'T/C 3.300 s · fluxo FIFO', tc:3300, tav:3000},
-    {id:'E4', nome:'Pintura', sub:'T/C 3.600 s · abastece o PA', tc:3600, tav:3300}
+    {id:'E1', nome:'Esquadrej./Corte', sub:'Repõe o pulmão do CCR', tc:3900, tav:3600},
+    {id:'E2', nome:'Calandragem', sub:'CCR · Processo Puxador', tc:5700, tav:5400, ccr:true},
+    {id:'E3', nome:'Biselamento', sub:'Fluxo FIFO', tc:3300, tav:3000},
+    {id:'E4', nome:'Pintura', sub:'Abastece o PA', tc:3600, tav:3300}
   ],
-  BUF: { MP:{max:30, start:10}, PUL:{max:4, start:4}, F23:{max:2, start:2}, F34:{max:2, start:2}, PA:{max:4, start:3} },
-  ZONES: {
-    PA:  c => c>=3 ? 'green' : (c===2 ? 'amber' : 'red'),
-    PUL: c => c>=3 ? 'green' : (c===2 ? 'amber' : 'red'),
-    MP:  c => c>=6 ? 'green' : (c>=3 ? 'amber' : 'red')
-  },
-  RETIRADAS: [{t:10*3600, q:2, nome:'manhã'}, {t:15*3600, q:2, nome:'tarde'}],
+  BUF: { MP:{max:40, start:10}, PUL:{max:4, start:4}, F23:{max:2, start:2}, F34:{max:2, start:2}, PA:{max:10, start:9} },
+  RET_ON: true, RET_DIA: 4,        // retiradas automáticas do campo (parâmetro do simulador)
   DIAS: ['Segunda','Terça','Quarta','Quinta','Sexta'],
-  DIA_INICIAL: 2 // Quarta — MP no nível médio (10), coerente com WIP alvo 22
+  DIA_INICIAL: 2 // Quarta — MP no nível médio (10)
 };
+function demanda(){ return CFG.RET_ON ? CFG.RET_DIA : CFG.DEMANDA; }
+function taktS(){ return CFG.TD / demanda(); }
 
 function novoEngine(){
   return {
     clock: CFG.DAY_START, dia: 1, diaSemanaIdx: CFG.DIA_INICIAL,
     running: false, fimDoDia: false,
     buf: { MP: CFG.BUF.MP.start, PUL: CFG.BUF.PUL.start, F23: CFG.BUF.F23.start, F34: CFG.BUF.F34.start, PA: CFG.BUF.PA.start },
-    kanban: 1,            // 1 cartão pendente (retirada de ontem à tarde)
-    backorder: 0,         // chapas devidas ao campo
+    kanban: 1,            // 1 cartão pendente (retirada de ontem)
+    backorder: 0,
     seqChapa: 147,
     st: CFG.STATIONS.map(s => ({ id:s.id, state:'idle', rem:0, tcRun:s.tc, chapa:null, prodHoje:0, busyHoje:0, readyIn:false, readyOut:false })),
-    retiradasFeitas: [],  // marcas dos horários já disparados hoje
-    expedidoHoje: 0, solicitadoHoje: 0, atendidoNoAto: 0,
-    forecast: 4, forecastAmanha: null,
+    autoRet: 0,           // retiradas automáticas já feitas hoje
+    expedidoHoje: 0, solicitadoHoje: 0, atendidoNoAto: 0, lastRetT: null,
+    entrega: {dia:0, qtd:20},   // agendamento vigente com o fornecedor
+    entregueSemana: true,       // a entrega desta semana (Seg) já ocorreu — começamos na Quarta
+    prevSemana: null, prevDia: null,  // previsão semanal do campo (informativa)
     scnTakt: false, taktFactor: 1.3,
     eventosAndon: 0,
     zonas: { PA:'green', PUL:'green', MP:'green' },
-    samples: [],          // {t, wip, pa}
-    log: [],              // {t, txt, cls, canal:'op'|'campo'|'gestor'|'all'}
-    pendCb: null
+    log: [], zonaChange: null
   };
 }
 
@@ -837,53 +877,63 @@ function workedSecs(e){
 }
 function stockWIP(e){ return e.buf.MP + e.buf.PUL + e.buf.F23 + e.buf.F34 + e.buf.PA; }
 function totalWIP(e){ return stockWIP(e) + e.st.filter(s => s.chapa).length; }
-function leadTimeDias(e){ return stockWIP(e)/CFG.DEMANDA + CFG.TP_TOTAL/CFG.TD; }
-function ecpPct(e){ return CFG.TAV_TOTAL / (leadTimeDias(e)*CFG.TD) * 100; }
 function tcCCR(e){ return Math.round(CFG.STATIONS[1].tc * (e.scnTakt ? e.taktFactor : 1)); }
-function folgaCCR(e){ return (CFG.TT - tcCCR(e)) / CFG.TT * 100; }
-function coberturaPA(e){ return (e.buf.PA - 0) / e.forecast; }
+function tpTotal(e){ return CFG.STATIONS[0].tc + tcCCR(e) + CFG.STATIONS[2].tc + CFG.STATIONS[3].tc; }
+function leadTimeDias(e){ return stockWIP(e)/demanda() + tpTotal(e)/CFG.TD; }
+function ecpPct(e){ return CFG.TAV_TOTAL / (leadTimeDias(e)*CFG.TD) * 100; }
+function folgaCCR(e){ return (taktS() - tcCCR(e)) / taktS() * 100; }
+function coberturaPA(e){ return e.buf.PA / demanda(); }
+function coberturaTotal(e){ return totalWIP(e) / demanda(); }
+function mudaProc(e){ return tpTotal(e) - CFG.TAV_TOTAL; }
 
-function elog(e, txt, cls, canal){ e.log.push({t:e.clock, dia:e.dia, txt, cls:cls||'', canal:canal||'all'}); if(e.log.length>240) e.log.shift(); }
+/* zonas Andon — Regular / Atenção / Crítico */
+function zonaPA(c){ const cob = c / demanda(); return cob >= 1.5 ? 'green' : (cob >= 1 ? 'amber' : 'red'); }
+function zonaPUL(c){ return c >= 3 ? 'green' : (c === 2 ? 'amber' : 'red'); }
+function zonaMP(c){ return c >= 6 ? 'green' : (c >= 3 ? 'amber' : 'red'); }
+
+function elog(e, txt, cls, src){ e.log.push({t:e.clock, dia:e.dia, txt, cls:cls||'', src:src||'sys'}); if(e.log.length>260) e.log.shift(); }
 function novaChapaId(e){ e.seqChapa++; return 'CH-'+String(e.seqChapa).padStart(4,'0'); }
 
 /* ——— retiradas do campo ——— */
 function solicitarRetirada(e, q, origem){
   e.solicitadoHoje += q;
-  e.kanban += q; // sinal de produção ao puxador nasce na demanda
+  e.kanban += q;
+  e.lastRetT = e.clock;
   const disp = Math.min(q, e.buf.PA);
   if (disp > 0){
     e.buf.PA -= disp; e.expedidoHoje += disp; e.atendidoNoAto += disp;
-    elog(e, `Expedição: ${disp} chapa(s) → campo (${origem})`, 'lg-o', 'all');
+    elog(e, `Retirada registrada: ${disp} chapa(s) → campo (${origem})`, 'lg-o', 'campo');
   }
   const falta = q - disp;
   if (falta > 0){
     e.backorder += falta;
-    elog(e, `⚠ ${falta} chapa(s) em pendência — PA insuficiente (${origem})`, 'lg-r', 'all');
+    elog(e, `⚠ ${falta} chapa(s) em pendência — PA insuficiente (${origem})`, 'lg-r', 'campo');
   }
   return {atendido: disp, falta};
 }
-function atenderBackorder(e){ // chamada quando PA recebe chapa nova
+function atenderBackorder(e){
   while (e.backorder > 0 && e.buf.PA > 0){
     e.buf.PA--; e.backorder--; e.expedidoHoje++;
-    elog(e, 'Pendência do campo atendida: 1 chapa expedida', 'lg-g', 'all');
+    elog(e, 'Pendência do campo atendida: 1 chapa expedida', 'lg-g', 'campo');
   }
 }
 
-/* ——— estações: condições de início e término ——— */
+/* ——— previsão semanal (informativa) ——— */
+function enviarPrevisao(e, qtd){
+  e.prevSemana = qtd; e.prevDia = CFG.DIAS[e.diaSemanaIdx];
+  elog(e, `Campo enviou previsão semanal ao PCP: ${qtd} ch (${(qtd*CFG.TON).toFixed(1).replace('.',',')} t) — substitui a anterior`, 'lg-c', 'campo');
+}
+
+/* ——— estações ——— */
 function podeIniciar(e, i){
   if (!isWork(e) || e.fimDoDia) return false;
   const s = e.st[i];
   if (s.state !== 'idle') return false;
-  if (i===0) return e.buf.MP > 0 && (e.buf.PUL + inflightPara(e,'PUL')) < CFG.BUF.PUL.max;
-  if (i===1) return e.kanban > 0 && e.buf.PUL > 0 && (e.buf.F23 + inflightPara(e,'F23')) < CFG.BUF.F23.max;
-  if (i===2) return e.buf.F23 > 0 && (e.buf.F34 + inflightPara(e,'F34')) < CFG.BUF.F34.max;
-  if (i===3) return e.buf.F34 > 0 && (e.buf.PA + inflightPara(e,'PA')) < CFG.BUF.PA.max + e.backorder;
+  if (i===0) return e.buf.MP > 0 && e.buf.PUL < CFG.BUF.PUL.max;
+  if (i===1) return e.kanban > 0 && e.buf.PUL > 0 && e.buf.F23 < CFG.BUF.F23.max;
+  if (i===2) return e.buf.F23 > 0 && e.buf.F34 < CFG.BUF.F34.max;
+  if (i===3) return e.buf.F34 > 0 && (e.buf.PA < CFG.BUF.PA.max || e.backorder > 0);
   return false;
-}
-function inflightPara(e, dest){
-  const map = {PUL:0, F23:1, F34:2, PA:3};
-  const s = e.st[map[dest]];
-  return (s.state==='run' || s.state==='done') ? 1 : 0;
 }
 function iniciar(e, i, manual){
   const s = e.st[i];
@@ -896,20 +946,6 @@ function iniciar(e, i, manual){
   s.rem = s.tcRun; s.state = 'run'; s.readyIn = false;
   elog(e, `${s.id} ▸ entrada ${s.chapa}${manual?' (QR manual)':''}`, 'lg-c', 'op');
 }
-function concluir(e, i, manual){
-  const s = e.st[i];
-  if (i===0) e.buf.PUL++;
-  if (i===1) e.buf.F23++;
-  if (i===2) e.buf.F34++;
-  if (i===3){
-    if (e.backorder > 0){ e.backorder--; e.expedidoHoje++; elog(e, `Expedição direta: ${s.chapa} → campo (pendência)`, 'lg-o', 'all'); }
-    else { e.buf.PA++; }
-    atenderBackorder(e);
-  }
-  s.prodHoje++;
-  elog(e, `${s.id} ◂ saída ${s.chapa}${manual?' (QR manual)':''}`, 'lg-g', 'op');
-  s.chapa = null; s.state = 'idle'; s.readyOut = false; s.rem = 0;
-}
 function podeConcluir(e, i){
   const s = e.st[i];
   if (s.state !== 'done') return false;
@@ -919,20 +955,32 @@ function podeConcluir(e, i){
   if (i===3) return e.buf.PA < CFG.BUF.PA.max || e.backorder > 0;
   return false;
 }
+function concluir(e, i, manual){
+  const s = e.st[i];
+  if (i===0) e.buf.PUL++;
+  if (i===1) e.buf.F23++;
+  if (i===2) e.buf.F34++;
+  if (i===3){
+    if (e.backorder > 0){ e.backorder--; e.expedidoHoje++; elog(e, `Expedição direta: ${s.chapa} → campo (pendência)`, 'lg-o', 'campo'); }
+    else { e.buf.PA++; }
+    atenderBackorder(e);
+  }
+  s.prodHoje++;
+  elog(e, `${s.id} ◂ saída ${s.chapa}${manual?' (QR manual)':''}`, 'lg-g', 'op');
+  s.chapa = null; s.state = 'idle'; s.readyOut = false; s.rem = 0;
+}
 
 /* ——— passo de simulação ——— */
 function step(e, dt, autoMode){
   if (e.fimDoDia) return;
-  const antes = Math.floor(e.clock);
   e.clock += dt;
 
-  // eventos programados de retirada
-  for (const r of CFG.RETIRADAS){
-    const key = r.nome + e.dia;
-    if (!e.retiradasFeitas.includes(key) && e.clock >= r.t){
-      e.retiradasFeitas.push(key);
-      const q = r.qOverride != null ? r.qOverride : r.q;
-      solicitarRetirada(e, q, 'retirada programada — ' + r.nome);
+  // retiradas automáticas do campo, distribuídas no turno
+  if (CFG.RET_ON){
+    const N = CFG.RET_DIA;
+    while (e.autoRet < N && workedSecs(e) >= (e.autoRet + 0.5) * CFG.TD / N){
+      solicitarRetirada(e, 1, 'campo · auto');
+      e.autoRet++;
     }
   }
 
@@ -943,9 +991,8 @@ function step(e, dt, autoMode){
       if (isWork(e)){ s.rem -= dt; s.busyHoje += dt; }
       if (s.rem <= 0){
         s.state = 'done';
-        if (autoMode){
-          if (podeConcluir(e, i)) concluir(e, i, false);
-        } else { s.readyOut = true; }
+        if (autoMode){ if (podeConcluir(e, i)) concluir(e, i, false); }
+        else s.readyOut = true;
       }
     } else if (s.state === 'done'){
       if (autoMode && podeConcluir(e, i)) concluir(e, i, false);
@@ -958,51 +1005,47 @@ function step(e, dt, autoMode){
   }
 
   // zonas Andon de estoque
+  const zs = { PA: zonaPA(e.buf.PA), PUL: zonaPUL(e.buf.PUL), MP: zonaMP(e.buf.MP) };
   for (const k of ['PA','PUL','MP']){
-    const z = CFG.ZONES[k](e.buf[k]);
-    if (z !== e.zonas[k]){
-      const prev = e.zonas[k]; e.zonas[k] = z;
-      const nome = k==='PA' ? 'Supermercado PA' : (k==='PUL' ? 'Pulmão do CCR' : 'Estoque MP');
-      if (z === 'amber'){ e.eventosAndon++; elog(e, `ANDON ◉ ${nome} no ponto de reposição (${e.buf[k]} ch) — priorizar fluxo`, 'lg-a', 'all'); }
-      else if (z === 'red'){ e.eventosAndon++; elog(e, `ANDON ● ${nome} CRÍTICO (${e.buf[k]} ch) — risco de desabastecimento`, 'lg-r', 'all'); }
-      else if (prev !== 'green'){ elog(e, `ANDON ○ ${nome} normalizado (${e.buf[k]} ch)`, 'lg-g', 'all'); }
-      e.zonaChange = {k, z, prev};
+    if (zs[k] !== e.zonas[k]){
+      const prev = e.zonas[k]; e.zonas[k] = zs[k];
+      const nome = k==='PA' ? 'Estoque PA' : (k==='PUL' ? 'Pulmão do CCR' : 'Estoque MP');
+      if (zs[k] === 'amber'){ e.eventosAndon++; elog(e, `ANDON ◉ Atenção — ${nome} no ponto de reposição (${e.buf[k]} ch)`, 'lg-a', 'andon'); }
+      else if (zs[k] === 'red'){ e.eventosAndon++; elog(e, `ANDON ● Crítico — ${nome} (${e.buf[k]} ch): risco de desabastecimento`, 'lg-r', 'andon'); }
+      else if (prev !== 'green'){ elog(e, `ANDON ○ Regular — ${nome} normalizado (${e.buf[k]} ch)`, 'lg-g', 'andon'); }
+      e.zonaChange = {k, z: zs[k], prev};
     }
-  }
-
-  // amostragem p/ gráfico (a cada 5 min sim)
-  if (Math.floor(e.clock/300) !== Math.floor(antes/300)){
-    e.samples.push({t: e.clock, wip: totalWIP(e), pa: e.buf.PA});
-    if (e.samples.length > 140) e.samples.shift();
   }
 
   // fim do turno
   if (e.clock >= CFG.DAY_END){
     e.clock = CFG.DAY_END; e.fimDoDia = true; e.running = false;
-    elog(e, `Fim do turno — ${e.expedidoHoje} chapa(s) expedida(s)`, 'lg-c', 'all');
+    elog(e, `Fim do turno — ${e.expedidoHoje} chapa(s) expedida(s)`, 'lg-c', 'sys');
   }
 }
 
 function proximoDia(e){
   e.dia++; e.diaSemanaIdx = (e.diaSemanaIdx + 1) % 5;
   e.clock = CFG.DAY_START; e.fimDoDia = false;
-  e.retiradasFeitas = []; e.expedidoHoje = 0; e.solicitadoHoje = 0; e.atendidoNoAto = 0;
+  e.autoRet = 0; e.expedidoHoje = 0; e.solicitadoHoje = 0; e.atendidoNoAto = 0; e.lastRetT = null;
   e.st.forEach(s => { s.prodHoje = 0; s.busyHoje = 0; });
-  if (e.forecastAmanha != null){ e.forecast = e.forecastAmanha; e.forecastAmanha = null; }
-  const m = Math.ceil(e.forecast/2), t = e.forecast - m;
-  CFG.RETIRADAS[0].qOverride = m; CFG.RETIRADAS[1].qOverride = t;
-  if (e.diaSemanaIdx === 0){ // segunda: entrega semanal
-    e.buf.MP = Math.min(CFG.BUF.MP.max, e.buf.MP + 20);
-    elog(e, 'Entrega semanal do fornecedor: +20 chapas no estoque MP', 'lg-c', 'all');
+  if (e.diaSemanaIdx === 0){ // segunda: nova semana
+    e.entregueSemana = false;
+    if (e.prevSemana != null) elog(e, `Nova semana — previsão do campo resetada (anterior: ${e.prevSemana} ch)`, 'lg-c', 'sys');
+    e.prevSemana = null; e.prevDia = null;
   }
-  elog(e, `Início do turno — ${CFG.DIAS[e.diaSemanaIdx]} (dia ${e.dia}) · retiradas ${m}+${t}`, 'lg-c', 'all');
+  if (!e.entregueSemana && e.diaSemanaIdx === e.entrega.dia){
+    e.buf.MP = Math.min(CFG.BUF.MP.max, e.buf.MP + e.entrega.qtd);
+    e.entregueSemana = true;
+    elog(e, `Entrega do fornecedor: +${e.entrega.qtd} chapas no estoque MP (agendamento de sexta)`, 'lg-o', 'sys');
+  }
+  elog(e, `Início do turno — ${CFG.DIAS[e.diaSemanaIdx]} (dia ${e.dia})`, 'lg-c', 'sys');
 }
 /*ENGINE-END*/
 
 /* ════════════════ ÁUDIO (Web Audio API) ════════════════ */
 const AUDIO = {
-  ctx: null, enabled: true,
-  lastPlay: 0,
+  ctx: null, enabled: true, lastPlay: 0,
   unlock(){ if (!this.ctx){ try{ this.ctx = new (window.AudioContext||window.webkitAudioContext)(); }catch(err){} }
             if (this.ctx && this.ctx.state==='suspended') this.ctx.resume(); },
   tone(f, t0, dur, type, vol){
@@ -1017,7 +1060,7 @@ const AUDIO = {
   play(kind){
     if (!this.enabled || !this.ctx) return;
     const now = performance.now();
-    if (now - this.lastPlay < 900) return; // anti-spam
+    if (now - this.lastPlay < 900) return;
     this.lastPlay = now;
     const t = this.ctx.currentTime;
     if (kind==='amber'){ this.tone(880,t,.14,'square',.15); this.tone(880,t+.22,.14,'square',.15); }
@@ -1029,20 +1072,73 @@ const AUDIO = {
 
 /* ════════════════ ESTADO DA UI ════════════════ */
 let E = novoEngine();
-let speed = 120, autoMode = true, staSel = 1, qtdRetirada = 2;
+let speed = 120, autoMode = true, staSel = 1, qtdRetirada = 2, schedQtd = 20;
+let logModeOp = 'op', logModeCampo = 'campo', logModeGes = 'all';
 let lastReal = null, renderAcc = 0;
 
 const $ = id => document.getElementById(id);
 function fmtHM(s){ const h = Math.floor(s/3600), m = Math.floor((s%3600)/60); return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); }
-function fmtSec(s){ if (s>=3600) return (s/3600).toFixed(1).replace('.',',')+' h'; if (s>=60) return Math.round(s/60)+' min'; return Math.round(s)+' s'; }
+function fmtMin(s){ return Math.round(s/60); }
 function fmtNum(v,d){ return v.toFixed(d==null?1:d).replace('.',','); }
 function toast(msg){ const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 2400); }
 
-/* ——— inicialização das retiradas do dia 1 ——— */
-CFG.RETIRADAS[0].qOverride = null; CFG.RETIRADAS[1].qOverride = null;
-elog(E, 'Início do turno — Quarta (dia 1) · supermercados no estado futuro', 'lg-c', 'all');
-elog(E, '1 kanban pendente da retirada de ontem à tarde', 'lg-o', 'op');
-E.samples.push({t: E.clock, wip: totalWIP(E), pa: E.buf.PA});
+elog(E, 'Início do turno — Quarta (dia 1) · supermercados no estado futuro (PA 2,5 dias)', 'lg-c', 'sys');
+elog(E, '1 kanban pendente da retirada de ontem', 'lg-o', 'op');
+
+/* ════════════════ ANDON — funções e agregação por perfil ════════ */
+const ZLVL = {green:0, amber:1, red:2};
+function andonFuncs(){
+  const f = {};
+  f.MP  = { z: E.zonas.MP, nome:'Estoque MP',
+            msg: E.zonas.MP==='red' ? `MP com ${E.buf.MP} chapa(s) — acionar fornecedor.` :
+                 E.zonas.MP==='amber' ? `MP com ${E.buf.MP} chapas — entrega agendada: ${CFG.DIAS[E.entrega.dia]}.` : 'MP abastecida.' };
+  let zPA = E.zonas.PA, msgPA = 'Estoque de PA dentro da zona verde.';
+  if (E.backorder > 0){ zPA = 'red'; msgPA = `${E.backorder} chapa(s) pendente(s) ao campo — escoar kanbans já.`; }
+  else if (zPA==='red') msgPA = `PA com ${E.buf.PA} chapa(s) (cobertura < 1 dia) — risco ao campo.`;
+  else if (zPA==='amber') msgPA = `PA com ${E.buf.PA} chapas — priorizar fluxo até a zona verde.`;
+  f.PA  = { z: zPA, nome:'Estoque PA', msg: msgPA };
+  let zPUL = E.zonas.PUL, msgPUL = 'Pulmão do CCR protegido.';
+  const starving = E.st[1].state==='idle' && E.kanban>0 && E.buf.PUL===0;
+  if (starving){ zPUL = 'red'; msgPUL = 'CCR sem abastecimento — E1 deve repor o pulmão imediatamente.'; }
+  else if (zPUL==='red') msgPUL = `Pulmão com ${E.buf.PUL} chapa(s) — Tambor em risco de inanição.`;
+  else if (zPUL==='amber') msgPUL = `Pulmão com ${E.buf.PUL} chapas — E1 repondo.`;
+  f.PUL = { z: zPUL, nome:'Pulmão CCR', msg: msgPUL };
+  f.TCT = { z: E.scnTakt ? 'amber' : 'green', nome:'TC vs Takt',
+            msg: E.scnTakt ? `CCR a ${tcCCR(E).toLocaleString('pt-BR')} s vs takt ${Math.round(taktS()).toLocaleString('pt-BR')} s — folga negativa.` : 'CCR dentro do takt.' };
+  return f;
+}
+function andonFor(perfil){ // 1: tudo · 2: só PA · 3: tudo
+  const f = andonFuncs();
+  const keys = perfil===2 ? ['PA'] : ['MP','PA','PUL','TCT'];
+  let worst = 'green', pick = null;
+  for (const k of keys){
+    if (ZLVL[f[k].z] > ZLVL[worst]){ worst = f[k].z; pick = f[k]; }
+  }
+  const titulo = worst==='red' ? 'Crítico' : worst==='amber' ? 'Atenção' : 'Regular';
+  const msg = pick ? `${pick.nome}: ${pick.msg}` :
+    (perfil===2 ? 'Estoque de PA dentro da zona verde.' : 'Todas as funções monitoradas na zona verde.');
+  return {lvl: worst, titulo, msg};
+}
+function setStrip(id, tId, mId, g){
+  const el = $(id);
+  el.classList.remove('andon-green','andon-amber','andon-red');
+  el.classList.add(g.lvl==='red' ? 'andon-red' : g.lvl==='amber' ? 'andon-amber' : 'andon-green');
+  $(tId).textContent = g.titulo; $(mId).textContent = g.msg;
+}
+
+/* ════════════════ STATUS DAS ESTAÇÕES ════════════════ */
+function stationStatus(i){
+  const s = E.st[i];
+  if (!isWork(E) && !E.fimDoDia && E.clock >= CFG.LUNCH_A) return {cls:'lunch', label:'ALMOÇO'};
+  if (i===0 && s.state==='idle' && E.buf.MP===0 && E.buf.PUL < CFG.BUF.PUL.max) return {cls:'crit', label:'SEM MP'};
+  if (i===1 && s.state==='idle' && E.kanban>0 && E.buf.PUL===0) return {cls:'crit', label:'SEM ABASTO'};
+  if (s.state==='run'){
+    if (i===1 && E.scnTakt) return {cls:'warn', label:'CICLO > TAKT'};
+    return {cls:'run', label:'PRODUZINDO'};
+  }
+  if (s.state==='done') return {cls:'warn', label:'AGUARDA VAGA'};
+  return {cls:'idle', label:'AGUARDA PUXADA'};
+}
 
 /* ════════════════ LAÇO PRINCIPAL ════════════════ */
 function loop(ts){
@@ -1051,7 +1147,6 @@ function loop(ts){
   lastReal = ts;
   if (E.running){
     let dtSim = dtReal * speed;
-    // sub-passos para não pular eventos com velocidade alta
     while (dtSim > 0){
       const sub = Math.min(dtSim, 60);
       step(E, sub, autoMode);
@@ -1080,45 +1175,115 @@ function flashStrips(){
   });
 }
 
-/* ════════════════ ANDON GLOBAL ════════════════ */
-function stationStatus(i){
-  const s = E.st[i];
-  if (!isWork(E) && !E.fimDoDia && E.clock >= CFG.LUNCH_A) return {cls:'lunch', label:'ALMOÇO', level:0};
-  if (i===1 && E.kanban>0 && E.buf.PUL===0 && s.state==='idle') return {cls:'crit', label:'INANIÇÃO', level:3};
-  if (s.state==='run'){
-    if (i===1 && E.scnTakt) return {cls:'warn', label:'CICLO > TAKT', level:2};
-    return {cls:'run', label:'PRODUZINDO', level:1};
-  }
-  if (s.state==='done') return {cls:'warn', label:'AGUARDA VAGA', level:1.5};
-  return {cls:'idle', label:'AGUARDA PUXADA', level:0};
-}
-function andonGlobal(){
-  // prioridade: vermelho estoque > inanição CCR > amarelo estoque > ciclo>takt > verde
-  if (E.zonas.PA==='red') return {lvl:'red', t:'PA crítico — risco ao campo', m:`Supermercado com ${E.buf.PA} chapa(s). Fabricação deve escoar kanbans pendentes já.`};
-  if (E.zonas.PUL==='red') return {lvl:'red', t:'Pulmão do CCR crítico', m:`Pulmão com ${E.buf.PUL} chapa(s) — E1 deve repor para não afamar o Tambor.`};
-  const st1 = stationStatus(1);
-  if (st1.cls==='crit') return {lvl:'red', t:'CCR em inanição', m:'Calandragem com kanban e sem chapa no pulmão.'};
-  if (E.zonas.MP==='red') return {lvl:'red', t:'Estoque MP crítico', m:`MP com ${E.buf.MP} chapa(s) — acionar fornecedor.`};
-  if (E.scnTakt) return {lvl:'amber', t:'Ciclo acima do takt no CCR', m:'Calandragem a 7.410 s vs takt 7.200 s — folga negativa, OEE em queda.'};
-  if (E.zonas.PA==='amber') return {lvl:'amber', t:'PA no ponto de reposição', m:`Supermercado com ${E.buf.PA} chapas — priorizar fluxo até a zona verde.`};
-  if (E.zonas.PUL==='amber') return {lvl:'amber', t:'Pulmão no ponto de reposição', m:`Pulmão com ${E.buf.PUL} chapas — E1 repondo.`};
-  if (E.zonas.MP==='amber') return {lvl:'amber', t:'MP abaixo do médio', m:`Estoque MP com ${E.buf.MP} chapas — entrega na segunda.`};
-  if (E.backorder>0) return {lvl:'red', t:'Campo desabastecido', m:`${E.backorder} chapa(s) pendente(s) para a obra.`};
-  return {lvl:'green', t:'Fluxo normal', m:'Produção puxada no ritmo do takt — estoques na zona verde.'};
-}
-function setStrip(id, tId, mId, g){
-  const el = $(id);
-  el.classList.remove('andon-green','andon-amber','andon-red');
-  el.classList.add(g.lvl==='red' ? 'andon-red' : g.lvl==='amber' ? 'andon-amber' : 'andon-green');
-  $(tId).textContent = g.t; $(mId).textContent = g.m;
-}
-
-/* ════════════════ RENDER ════════════════ */
+/* ════════════════ FLUXO VERTICAL (P1 + P3) ════════════════ */
 function slotsHTML(count, max){
   let h = '';
   for (let i=0;i<max;i++) h += `<div class="slt${i<count?' full':''}"></div>`;
   return h;
 }
+function vflowHTML(){
+  const bufs = [
+    {k:'MP',  nome:'MP',     c:E.buf.MP,  max:10, zone:E.zonas.MP, open:true},
+    {m:0},
+    {k:'PUL', nome:'Pulmão', c:E.buf.PUL, max:4,  zone:E.zonas.PUL},
+    {m:1},
+    {k:'F23', nome:'FIFO',   c:E.buf.F23, max:2,  zone:'green'},
+    {m:2},
+    {k:'F34', nome:'FIFO',   c:E.buf.F34, max:2,  zone:'green'},
+    {m:3},
+    {k:'PA',  nome:'PA',     c:E.buf.PA,  max:10, zone:E.zonas.PA}
+  ];
+  let h = '';
+  for (const b of bufs){
+    if (b.m != null){
+      const i = b.m, s = E.st[i], stt = stationStatus(i);
+      const cls = stt.cls==='run' ? 's-run' : stt.cls==='warn' ? 's-warn' : stt.cls==='crit' ? 's-crit' : '';
+      const prog = (s.state==='run'||s.state==='done') ? Math.min(100,(s.tcRun-Math.max(0,s.rem))/s.tcRun*100) : 0;
+      const eta = s.chapa ? `${s.chapa} · ${fmtMin(s.tcRun-Math.max(0,s.rem))}/${fmtMin(s.tcRun)} min` : CFG.STATIONS[i].sub;
+      const kb = (i===1) ? `<span class="vf-kb${E.kanban>0?' pulse':''}">⬖ ${E.kanban} KANBAN</span>` : '';
+      h += `<div class="vf-sta ${cls}"><span class="vf-led"></span><b>${CFG.STATIONS[i].id}</b>` +
+           `<span class="vf-eta">${eta}</span>${kb}<em>${stt.label}</em>` +
+           `<div class="vf-prog" style="width:${prog}%"></div></div>`;
+    } else {
+      const zc = b.zone==='amber' ? ' z-amber' : b.zone==='red' ? ' z-red' : '';
+      const slotCount = Math.min(b.c, b.max);
+      h += `<div class="vf-buf${zc}"><span class="vf-name">${b.nome}</span>` +
+           `<div class="vf-slots">${slotsHTML(slotCount, b.max)}</div>` +
+           `<span class="vf-n">${b.c}${b.open ? '' : '/'+b.max}</span></div>`;
+    }
+  }
+  return h;
+}
+
+/* ════════════════ KPIs DA GESTÃO (esqueleto estático) ════════════════ */
+const KPIS = [
+  {id:'takt',  nome:'Takt Time',                       unit:'min'},
+  {id:'lt',    nome:'Lead Time de Produção',           unit:'dias'},
+  {id:'tp',    nome:'Tempo de Processamento',          unit:'min'},
+  {id:'tav',   nome:'Tempo de Agregação de Valor',     unit:'min'},
+  {id:'muda',  nome:'Muda de Processamento',           unit:'min'},
+  {id:'tcccr', nome:'TC do CCR',                       unit:'min'},
+  {id:'folga', nome:'Folga do CCR sobre o Takt',       unit:'%'},
+  {id:'wip',   nome:'WIP total',                       unit:''},
+  {id:'cobpa', nome:'Cobertura de Estoque de PA',      unit:'dias'},
+  {id:'cobtot',nome:'Cobertura de Estoque Total',      unit:'dias'},
+  {id:'ecp',   nome:'Eficiência do Ciclo de Produção', unit:'%'},
+  {id:'exp',   nome:'Expedido Hoje',                   unit:''}
+];
+function kpiValues(){
+  const wip = totalWIP(E);
+  return {
+    takt:  {v: fmtNum(taktS()/60,0), u:' min'},
+    lt:    {v: fmtNum(leadTimeDias(E),2), u:' dias'},
+    tp:    {v: fmtNum(tpTotal(E)/60,0), u:' min'},
+    tav:   {v: fmtNum(CFG.TAV_TOTAL/60,0), u:' min'},
+    muda:  {v: fmtNum(mudaProc(E)/60,(mudaProc(E)%60)?1:0), u:' min'},
+    tcccr: {v: fmtNum(tcCCR(E)/60,(tcCCR(E)%60)?1:0), u:' min'},
+    folga: {v: fmtNum(folgaCCR(E),1), u:' %'},
+    wip:   {v: String(wip), u:' un · '+fmtNum(wip*CFG.TON,1)+' t'},
+    cobpa: {v: fmtNum(coberturaPA(E),2), u:' dias'},
+    cobtot:{v: fmtNum(coberturaTotal(E),2), u:' dias'},
+    ecp:   {v: fmtNum(ecpPct(E),2), u:' %'},
+    exp:   {v: E.expedidoHoje + ' / ' + demanda(), u:' un'}
+  };
+}
+function kpiNum(){ // valores numéricos crus p/ tabela de metas
+  return {
+    takt: taktS()/60, lt: leadTimeDias(E), tp: tpTotal(E)/60, tav: CFG.TAV_TOTAL/60,
+    muda: mudaProc(E)/60, tcccr: tcCCR(E)/60, folga: folgaCCR(E), wip: totalWIP(E),
+    cobpa: coberturaPA(E), cobtot: coberturaTotal(E), ecp: ecpPct(E), exp: E.expedidoHoje
+  };
+}
+function kpiState(id, n){
+  switch(id){
+    case 'lt':    return n.lt <= 7.7 ? 'k-good' : n.lt <= 9 ? 'k-warn' : 'k-crit';
+    case 'ecp':   return n.ecp >= 6.9 ? 'k-good' : n.ecp >= 5.5 ? 'k-warn' : 'k-crit';
+    case 'wip':   return n.wip <= 28 ? 'k-good' : n.wip <= 32 ? 'k-warn' : 'k-crit';
+    case 'folga': return n.folga >= 15 ? 'k-good' : n.folga >= 0 ? 'k-warn' : 'k-crit';
+    case 'cobpa': return E.zonas.PA==='green' ? 'k-good' : E.zonas.PA==='amber' ? 'k-warn' : 'k-crit';
+    case 'muda':  return n.muda <= 20.01 ? 'k-good' : 'k-warn';
+    case 'tcccr': return tcCCR(E) <= taktS() ? 'k-good' : 'k-crit';
+    case 'exp':   return E.backorder>0 ? 'k-crit' : 'k-info';
+    default:      return 'k-info';
+  }
+}
+const METAS_DEF = { takt:120, lt:7.57, tp:275, tav:255, muda:20, tcccr:95, folga:20.8, wip:28, cobpa:2.5, cobtot:7.0, ecp:7.02, exp:4 };
+function buildKpiGrid(){
+  $('kpiGrid').innerHTML = KPIS.map(k =>
+    `<div class="kpi k-info" id="kpi-${k.id}"><div class="k-name">${k.nome}</div><div class="k-val" id="kv-${k.id}">—</div></div>`
+  ).join('');
+}
+function buildMetaTable(){
+  const tb = $('metaTable').querySelector('tbody');
+  tb.innerHTML = KPIS.map(k =>
+    `<tr><td>${k.nome}${k.unit?' ('+k.unit+')':''}</td>` +
+    `<td id="mta-${k.id}">—</td>` +
+    `<td><input type="number" step="any" id="mto-${k.id}" value="${METAS_DEF[k.id]}"></td>` +
+    `<td class="mt-var" id="mtv-${k.id}">—</td></tr>`
+  ).join('');
+}
+
+/* ════════════════ RENDER ════════════════ */
 function render(){
   const hm = fmtHM(E.clock);
   $('hdrClock').textContent = hm;
@@ -1127,23 +1292,16 @@ function render(){
   $('hdrShift').textContent = E.fimDoDia ? 'Encerrado' : (!isWork(E) && E.clock>=CFG.LUNCH_A ? 'Almoço' : (E.running ? 'Operando' : 'Pausado'));
   ['sbClock1','sbClock2','sbClock3'].forEach(id => $(id).textContent = hm);
 
-  const g = andonGlobal();
-  setStrip('andonOp','andonOpTitle','andonOpMsg', g);
-  setStrip('andonGestor','andonGestorTitle','andonGestorMsg', g);
-  // Campo: foco no abastecimento
-  const gc = (E.backorder>0) ? {lvl:'red', t:'Fornecimento interrompido', m:`${E.backorder} chapa(s) pendente(s) — fabricação alertada via Andon.`}
-    : E.zonas.PA==='red' ? {lvl:'red', t:'Risco de desabastecimento', m:`PA com ${E.buf.PA} chapa(s) — Andon de estoque acionado na fabricação.`}
-    : E.zonas.PA==='amber' ? {lvl:'amber', t:'Cobertura em queda', m:`PA com ${E.buf.PA} chapas — reposição priorizada no galpão.`}
-    : {lvl:'green', t:'Abastecimento garantido', m:'Supermercado de PA dentro da zona verde.'};
-  setStrip('andonCampo','andonCampoTitle','andonCampoMsg', gc);
+  setStrip('andonOp','andonOpTitle','andonOpMsg', andonFor(1));
+  setStrip('andonCampo','andonCampoTitle','andonCampoMsg', andonFor(2));
+  setStrip('andonGestor','andonGestorTitle','andonGestorMsg', andonFor(3));
 
-  renderOperacao(g);
+  renderOperacao();
   renderCampo();
-  renderGestor();
+  renderGestao();
 }
 
 function renderOperacao(){
-  // abas
   document.querySelectorAll('#staTabs button').forEach((b,i)=>{
     b.classList.toggle('on', i===staSel);
     const st = stationStatus(i);
@@ -1153,34 +1311,33 @@ function renderOperacao(){
     else if (st.cls==='crit') b.classList.add('s-crit');
   });
   const s = E.st[staSel], cs = CFG.STATIONS[staSel], st = stationStatus(staSel);
-  $('stName').childNodes[0].textContent = cs.nome;
-  $('stSub').textContent = cs.sub;
+  const tcShow = (staSel===1) ? tcCCR(E) : cs.tc;
+  $('stName').textContent = cs.nome;
+  $('stSub').textContent = (cs.ccr ? 'CCR · Processo Puxador · ' : '') + 'T/C ' + fmtMin(tcShow) + ' min';
+  const kb = $('stKanban');
+  if (staSel===1){ kb.style.display='inline-flex'; kb.textContent = '⬖ ' + E.kanban + ' KANBAN'; kb.classList.toggle('pulse', E.kanban>0); }
+  else kb.style.display='none';
   const badge = $('stBadge');
   badge.textContent = st.label;
   badge.className = 'st-badge ' + (st.cls==='run'?'stb-run':st.cls==='warn'?'stb-warn':st.cls==='crit'?'stb-crit':st.cls==='lunch'?'stb-lunch':'stb-idle');
 
-  // ciclo vs takt
-  const tcShow = (staSel===1) ? tcCCR(E) : cs.tc;
-  const decorrido = s.state==='run' || s.state==='done' ? (s.tcRun - Math.max(0,s.rem)) : 0;
-  const pctTakt = Math.min(1.12, decorrido / CFG.TT);
-  const fill = $('czFill');
-  fill.style.width = (pctTakt*100/1.12).toFixed(1)+'%';
-  fill.classList.toggle('overt', decorrido > CFG.TT || tcShow > CFG.TT);
-  $('czTakt').style.left = (100/1.12).toFixed(1)+'%';
-  $('czCur').textContent = s.chapa ? fmtSec(decorrido) + ' / ' + fmtSec(s.tcRun) : '—';
+  // tempo de processamento vs takt (escala da barra: 1,12 × TT)
+  const TTs = taktS();
+  const SCALE = 1.12 * TTs;
+  const decorrido = (s.state==='run' || s.state==='done') ? (s.tcRun - Math.max(0,s.rem)) : 0;
+  $('czFill').style.width = Math.min(100, decorrido/SCALE*100).toFixed(1)+'%';
+  $('czFill').classList.toggle('overt', decorrido > TTs || tcShow > TTs);
+  $('czTakt').style.left = (TTs/SCALE*100).toFixed(1)+'%';
+  $('czTc').style.left = Math.min(99,(tcShow/SCALE*100)).toFixed(1)+'%';
+  const th = Math.floor(TTs/3600), tm = Math.round((TTs%3600)/60);
+  $('czTaktLbl').textContent = th + 'h' + String(tm).padStart(2,'0');
+  $('czCur').textContent = s.chapa ? fmtMin(decorrido) + ' min / ' + fmtMin(s.tcRun) + ' min' : '—';
   $('czChapa').textContent = s.chapa ? ('chapa ' + s.chapa + (s.state==='done' ? ' · pronta, aguardando saída' : ' em processamento')) : 'sem chapa na estação';
-  $('czPct').textContent = Math.round(pctTakt*100) + '% do takt';
+  $('czPct').textContent = Math.round(decorrido/TTs*100) + '% do takt';
 
-  // contadores
-  const esperado = Math.floor(workedSecs(E) / CFG.TT);
   $('pgProd').textContent = s.prodHoje;
-  $('pgMeta').textContent = esperado;
-  const saldo = s.prodHoje - esperado;
-  const pgS = $('pgSaldo');
-  pgS.textContent = (saldo>0?'+':'') + saldo;
-  pgS.parentElement.className = 'pg ' + (saldo<0 ? 'warn' : 'good');
+  $('pgMeta').textContent = demanda();
 
-  // botões QR
   const showAuto = autoMode;
   $('scanRow').style.display = showAuto ? 'none' : 'grid';
   $('autoChip').style.display = showAuto ? 'block' : 'none';
@@ -1194,148 +1351,91 @@ function renderOperacao(){
     $('outHint').textContent = canOut ? 'depositar no buffer' : (s.state==='run' ? 'em ciclo…' : s.state==='done' ? 'sem vaga a jusante' : 'sem chapa pronta');
   }
 
-  // kanban
-  $('kanbanCount').textContent = E.kanban + (E.kanban===1?' cartão':' cartões');
-  const kr = $('kanbanRow');
-  if (E.kanban === 0) kr.innerHTML = '<span class="k-empty">Sem kanban pendente — aguardando puxada do campo.</span>';
-  else {
-    let h = '';
-    for (let i=0;i<Math.min(E.kanban,6);i++) h += `<div class="kcard">KANBAN<br>PRODUÇÃO<small>API-650 · 1 ch</small></div>`;
-    if (E.kanban>6) h += `<span style="font-family:var(--mono);font-size:12px;color:var(--safety)">+${E.kanban-6}</span>`;
-    kr.innerHTML = h;
-  }
-
-  // linha de fluxo (buffers + máquinas)
-  const fl = $('flowLine');
-  const bufs = [
-    {k:'MP', nome:'MP', c:E.buf.MP, max:10, zone:E.zonas.MP},
-    {m:0}, {k:'PUL', nome:'Pulmão', c:E.buf.PUL, max:4, zone:E.zonas.PUL},
-    {m:1}, {k:'F23', nome:'FIFO', c:E.buf.F23, max:2, zone:'green'},
-    {m:2}, {k:'F34', nome:'FIFO', c:E.buf.F34, max:2, zone:'green'},
-    {m:3}, {k:'PA', nome:'PA', c:E.buf.PA, max:4, zone:E.zonas.PA}
-  ];
-  let fh = '';
-  bufs.forEach(b=>{
-    if (b.m != null){
-      const stt = stationStatus(b.m);
-      const mcls = stt.cls==='run' ? 'm-run' : stt.cls==='warn' ? 'm-warn' : stt.cls==='crit' ? 'm-crit' : '';
-      fh += `<div class="machine-chip ${mcls}"><div class="mc-led"></div><span>${CFG.STATIONS[b.m].id}</span></div>`;
-    } else {
-      const zc = b.zone==='amber' ? ' z-amber' : b.zone==='red' ? ' z-red' : '';
-      const slotMax = Math.min(b.max, 10);
-      const slotCount = b.k==='MP' ? Math.min(b.c, 10) : b.c;
-      fh += `<div class="bufbox${zc}"><div class="bb-name">${b.nome}</div><div class="slots">${slotsHTML(slotCount, slotMax)}</div><div class="bb-num">${b.c}${b.k==='MP'?'':'/'+b.max}</div></div>`;
-    }
-  });
-  fl.innerHTML = fh;
-
-  // mini andon
-  let mh = '';
-  for (let i=0;i<4;i++){
-    const stt = stationStatus(i);
-    const mc = stt.cls==='run' ? 'run' : stt.cls==='warn' ? 'warn' : stt.cls==='crit' ? 'crit' : '';
-    mh += `<div class="ma ${mc}"><div class="led"></div><span>${CFG.STATIONS[i].id}</span><small>${stt.label}</small></div>`;
-  }
-  $('miniAndon').innerHTML = mh;
-
-  renderLog('logOp', l => l.canal==='op' || l.canal==='all');
+  $('flowOp').innerHTML = vflowHTML();
+  renderLog('logOp', logModeOp);
 }
 
 function renderCampo(){
-  $('paSlots').innerHTML = slotsHTML(E.buf.PA, 4);
+  $('paSlots').innerHTML = slotsHTML(E.buf.PA, 10);
   $('paCount').textContent = E.buf.PA;
   $('paTon').textContent = fmtNum(E.buf.PA*CFG.TON, 2);
-  $('paZcur').style.left = 'calc(' + (E.buf.PA/4*100) + '% - 2px)';
+  $('paZcur').style.left = 'calc(' + (E.buf.PA/10*100) + '% - 2px)';
   const cob = coberturaPA(E);
   $('coverNum').textContent = fmtNum(cob, 2);
   const arc = $('coverArc');
-  const frac = Math.max(0, Math.min(1, cob/1));
+  const frac = Math.max(0, Math.min(1, cob/2.5));
   arc.style.strokeDashoffset = String(276.5 * (1-frac));
   arc.style.stroke = E.zonas.PA==='red' ? 'var(--andon-red)' : E.zonas.PA==='amber' ? 'var(--andon-amber)' : 'var(--andon-green)';
 
   $('qVal').textContent = qtdRetirada;
-  const pc = $('pendChip');
-  pc.style.display = E.backorder>0 ? 'block' : 'none';
-  $('pendN').textContent = E.backorder;
   $('btnRetirar').disabled = E.fimDoDia;
-
-  const m = CFG.RETIRADAS[0], t = CFG.RETIRADAS[1];
-  const qm = m.qOverride!=null?m.qOverride:m.q, qt = t.qOverride!=null?t.qOverride:t.q;
-  $('nxManha').textContent = '10:00 · ' + qm + ' ch' + (E.retiradasFeitas.includes('manhã'+E.dia)?' ✓':'');
-  $('nxTarde').textContent = '15:00 · ' + qt + ' ch' + (E.retiradasFeitas.includes('tarde'+E.dia)?' ✓':'');
   $('nxHoje').textContent = E.expedidoHoje;
+  $('nxPend').textContent = E.backorder;
+  $('nxPendBox').classList.toggle('alert', E.backorder>0);
+  $('nxUlt').textContent = E.lastRetT != null ? fmtHM(E.lastRetT) : '—';
 
-  const fb = $('campoFlow'), g = andonGlobal();
+  const fb = $('campoFlow'), g = andonFor(2);
   fb.classList.remove('warn','crit');
   if (g.lvl==='red') fb.classList.add('crit');
   else if (g.lvl==='amber') fb.classList.add('warn');
-  $('campoFlowTxt').textContent = g.lvl==='green' ? 'Fabricação em ritmo normal — sem alertas Andon ativos.' : 'Andon ativo na fabricação: ' + g.t + '.';
+  $('campoFlowTxt').textContent = g.lvl==='green' ? 'Fabricação em ritmo normal — sem alertas Andon ativos.' : 'Andon ' + g.titulo + ' na fabricação — ' + g.msg;
 
-  renderLog('logCampo', l => l.canal==='campo' || l.canal==='all');
+  renderLog('logCampo', logModeCampo);
 }
 
-function renderGestor(){
-  const lt = leadTimeDias(E), ecp = ecpPct(E), wip = totalWIP(E), folga = folgaCCR(E), cob = coberturaPA(E);
-  $('ltVal').innerHTML = fmtNum(lt,2) + '<small> dias</small>';
-  $('kpiLT').className = 'kpi ' + (lt<=6.2 ? 'k-good' : lt<=8 ? 'k-warn' : 'k-crit');
-  $('ecpVal').innerHTML = fmtNum(ecp,2) + '<small> %</small>';
-  $('kpiECP').className = 'kpi ' + (ecp>=8.5 ? 'k-good' : ecp>=6 ? 'k-warn' : 'k-crit');
-  $('wipVal').innerHTML = wip + '<small> ch</small>';
-  $('wipSub').textContent = fmtNum(wip*CFG.TON,1) + ' t · alvo ≤ 22 ch';
-  $('kpiWIP').className = 'kpi ' + (wip<=22 ? 'k-good' : wip<=26 ? 'k-warn' : 'k-crit');
-  $('thruVal').innerHTML = E.expedidoHoje + '<small> / ' + E.forecast + ' ch</small>';
-  const ader = E.solicitadoHoje>0 ? (E.atendidoNoAto/E.solicitadoHoje*100) : 100;
-  $('aderSub').textContent = 'aderência ' + fmtNum(ader,0) + '%' + (E.backorder>0 ? ' · ' + E.backorder + ' pendente(s)' : '');
-  $('kpiThru').className = 'kpi ' + (E.backorder>0 ? 'k-crit' : 'k-info');
-  $('folgaVal').innerHTML = fmtNum(folga,1) + '<small> %</small>';
-  $('folgaSub').textContent = 'T/C ' + tcCCR(E).toLocaleString('pt-BR') + ' s vs TT 7.200 s';
-  $('kpiFolga').className = 'kpi ' + (folga>=15 ? 'k-good' : folga>=0 ? 'k-warn' : 'k-crit');
-  $('cobVal').innerHTML = fmtNum(cob,2) + '<small> dia</small>';
-  $('cobSub').textContent = E.buf.PA + ' ch · consumo ' + E.forecast + ' ch/d';
-  $('kpiCob').className = 'kpi ' + (E.zonas.PA==='green' ? 'k-good' : E.zonas.PA==='amber' ? 'k-warn' : 'k-crit');
+function renderGestao(){
+  // chips de função Andon
+  const f = andonFuncs();
+  $('achips').innerHTML = ['MP','PA','PUL','TCT'].map(k => {
+    const z = f[k].z==='red' ? 'r' : f[k].z==='amber' ? 'a' : 'g';
+    const lbl = f[k].z==='red' ? 'Crítico' : f[k].z==='amber' ? 'Atenção' : 'Regular';
+    return `<div class="achip ${z}"><i></i><span>${f[k].nome}</span><small>${lbl}</small></div>`;
+  }).join('');
 
-  // OEE
-  const perf = CFG.STATIONS[1].tc / tcCCR(E) * 100;
-  const oee = perf; // disp = qual = 100%
-  $('oeeVal').innerHTML = fmtNum(oee,1) + '<small> %</small>';
-  $('oeePerf').textContent = fmtNum(perf,1) + '%';
-  const ws = workedSecs(E);
-  const ocup = ws>0 ? (E.st[1].busyHoje/ws*100) : 0;
-  $('oeeSub').textContent = 'ocupação do CCR hoje: ' + fmtNum(ocup,0) + '% (folga é saúde do Tambor)';
-  $('oeeStamp').textContent = E.scnTakt ? 'cenário ativo' : 'nominal';
+  // KPIs
+  const vals = kpiValues(), nums = kpiNum();
+  for (const k of KPIS){
+    $('kv-'+k.id).innerHTML = vals[k.id].v + '<small>' + vals[k.id].u + '</small>';
+    $('kpi-'+k.id).className = 'kpi ' + kpiState(k.id, nums);
+  }
 
-  drawSpark();
-  renderLog('logGestor', l => true);
+  // status da operação
+  $('flowGes').innerHTML = vflowHTML();
+
+  // abastecimento & previsão
+  $('supEntrega').textContent = CFG.DIAS[E.entrega.dia].slice(0,3) + ' · ' + E.entrega.qtd + ' ch';
+  $('supEntregaSub').innerHTML = fmtNum(E.entrega.qtd*CFG.TON,1) + ' t · ' + (E.entregueSemana ? '<span class="s-ok">entregue nesta semana ✓</span>' : 'agendada');
+  if (E.prevSemana != null){
+    $('supPrev').textContent = E.prevSemana + ' ch/sem';
+    $('supPrevSub').textContent = fmtNum(E.prevSemana*CFG.TON,1) + ' t · enviada ' + (E.prevDia||'');
+  } else {
+    $('supPrev').textContent = '—';
+    $('supPrevSub').textContent = 'sem previsão nesta semana';
+  }
+
+  // metas: atual ao vivo + Δ%
+  for (const k of KPIS){
+    $('mta-'+k.id).textContent = (k.id==='wip'||k.id==='exp') ? String(Math.round(nums[k.id])) : fmtNum(nums[k.id], (k.id==='takt'||k.id==='tp'||k.id==='tav')?0:2);
+    const objEl = $('mto-'+k.id);
+    const obj = parseFloat(objEl.value);
+    const cur = nums[k.id];
+    if (!isNaN(obj) && Math.abs(cur) > 1e-9){
+      const dv = (obj-cur)/Math.abs(cur)*100;
+      $('mtv-'+k.id).textContent = (dv>0?'+':'') + fmtNum(dv,1) + '%';
+    } else $('mtv-'+k.id).textContent = '—';
+  }
+
+  renderLog('logGestor', logModeGes);
 }
 
-function renderLog(id, filtro){
+/* Registros: filtro por escopo — Andon sempre visível */
+function renderLog(id, mode){
   const el = $(id);
-  const items = E.log.filter(filtro).slice(-26).reverse();
+  const items = E.log.filter(l => mode==='all' ? true : (l.src===mode || l.src==='andon')).slice(-26).reverse();
   el.innerHTML = items.map(l => `<div><time>${fmtHM(l.t)}</time><span class="${l.cls}">${l.txt}</span></div>`).join('');
 }
 
-function drawSpark(){
-  const cv = $('sparkCanvas'), ctx = cv.getContext('2d');
-  const W = cv.width, H = cv.height;
-  ctx.clearRect(0,0,W,H);
-  if (E.samples.length < 2) return;
-  const s = E.samples;
-  const maxW = 30;
-  // linha alvo WIP 22
-  const y22 = H - (22/maxW)*H*0.92 - 4;
-  ctx.strokeStyle = 'rgba(255,122,26,.4)'; ctx.setLineDash([5,5]); ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.moveTo(0,y22); ctx.lineTo(W,y22); ctx.stroke(); ctx.setLineDash([]);
-  const px = i => i/(s.length-1)*W;
-  const py = v => H - (v/maxW)*H*0.92 - 4;
-  // WIP
-  ctx.strokeStyle = '#39c2ff'; ctx.lineWidth = 2.5; ctx.beginPath();
-  s.forEach((p,i)=>{ i?ctx.lineTo(px(i),py(p.wip)):ctx.moveTo(px(i),py(p.wip)); }); ctx.stroke();
-  // PA (escala própria ×(maxW/4) para legibilidade)
-  ctx.strokeStyle = '#2dd881'; ctx.lineWidth = 2; ctx.beginPath();
-  s.forEach((p,i)=>{ const v = p.pa*(maxW/4)*0.5; i?ctx.lineTo(px(i),py(v)):ctx.moveTo(px(i),py(v)); }); ctx.stroke();
-}
-
-/* ════════════════ RESUMO DO DIA ════════════════ */
+/* ════════════════ RESUMO DO DIA / AGENDAMENTO DE SEXTA ════════════════ */
 function abrirResumo(){
   if ($('modSum').classList.contains('open')) return;
   $('sumDay').textContent = CFG.DIAS[E.diaSemanaIdx] + ' — Dia ' + E.dia;
@@ -1347,8 +1447,22 @@ function abrirResumo(){
   $('sumECP').textContent = fmtNum(ecpPct(E),2)+'%';
   $('sumAndon').textContent = E.eventosAndon;
   $('sumNote').textContent = E.backorder>0
-    ? '⚠ Há ' + E.backorder + ' chapa(s) pendente(s) ao campo — o turno seguinte inicia priorizando a reposição do supermercado.'
+    ? '⚠ Há ' + E.backorder + ' chapa(s) pendente(s) ao campo — o turno seguinte inicia priorizando a reposição.'
     : 'Turno encerrado com o campo abastecido e estoques dentro dos limites do VSM futuro.';
+  const sexta = E.diaSemanaIdx === 4;
+  $('schedSec').style.display = sexta ? 'block' : 'none';
+  if (sexta){
+    schedQtd = E.prevSemana != null ? E.prevSemana : E.entrega.qtd;
+    $('schedDia').value = String(E.entrega.dia);
+    $('schedQtd').textContent = schedQtd + ' ch';
+    $('schedPeso').textContent = fmtNum(schedQtd*CFG.TON,1) + ' t';
+    $('schedHint').textContent = E.prevSemana != null
+      ? 'Sugestão pré-carregada com a previsão semanal enviada pelo campo (' + E.prevSemana + ' ch).'
+      : 'Sem previsão do campo nesta semana — pré-carregado com o último agendamento.';
+    $('btnNextDay').innerHTML = '▶ Agendar entrega e iniciar a próxima semana';
+  } else {
+    $('btnNextDay').innerHTML = '▶ Iniciar próximo dia';
+  }
   $('modSum').classList.add('open');
   $('btnPlay').innerHTML = '▶ Retomar';
 }
@@ -1358,10 +1472,10 @@ document.addEventListener('pointerdown', () => AUDIO.unlock(), {once:false});
 
 $('btnPlay').addEventListener('click', () => {
   AUDIO.unlock();
-  if (E.fimDoDia){ $('modSum').classList.add('open'); return; }
+  if (E.fimDoDia){ abrirResumo(); $('modSum').classList.add('open'); return; }
   E.running = !E.running;
   $('btnPlay').innerHTML = E.running ? '❚❚ Pausar' : '▶ Retomar';
-  if (E.running && E.clock===CFG.DAY_START) toast('Turno iniciado — o campo puxa, a fábrica responde.');
+  if (E.running && E.clock===CFG.DAY_START && E.dia===1) toast('Turno iniciado — o campo puxa, a fábrica responde.');
 });
 $('btnSkip').addEventListener('click', () => {
   if (E.fimDoDia) return;
@@ -1372,9 +1486,7 @@ $('btnSkip').addEventListener('click', () => {
 });
 $('btnReset').addEventListener('click', () => {
   E = novoEngine();
-  CFG.RETIRADAS[0].qOverride = null; CFG.RETIRADAS[1].qOverride = null;
-  elog(E, 'Simulação reiniciada — Quarta (dia 1)', 'lg-c', 'all');
-  E.samples.push({t:E.clock, wip:totalWIP(E), pa:E.buf.PA});
+  elog(E, 'Simulação reiniciada — Quarta (dia 1) · PA 2,5 dias', 'lg-c', 'sys');
   $('btnPlay').innerHTML = '▶ Iniciar turno';
   $('scnTakt').classList.remove('armed');
   $('modSum').classList.remove('open');
@@ -1391,6 +1503,14 @@ $('tglAuto').addEventListener('click', () => {
   toast(autoMode ? 'Apontamento automático — QR lido pelo sistema.' : 'Apontamento manual — toque para escanear o QR.');
   render();
 });
+$('tglRet').addEventListener('click', () => {
+  CFG.RET_ON = !CFG.RET_ON;
+  $('tglRet').classList.toggle('on', CFG.RET_ON);
+  toast(CFG.RET_ON ? 'Retiradas automáticas do campo ativadas (' + CFG.RET_DIA + ' ch/dia).' : 'Retiradas automáticas desativadas — use o botão Retirada no perfil Campo.');
+  render();
+});
+$('retMinus').addEventListener('click', () => { CFG.RET_DIA = Math.max(1, CFG.RET_DIA-1); $('retVal').textContent = CFG.RET_DIA + ' ch/dia'; render(); });
+$('retPlus').addEventListener('click', () => { CFG.RET_DIA = Math.min(8, CFG.RET_DIA+1); $('retVal').textContent = CFG.RET_DIA + ' ch/dia'; render(); });
 $('tglSound').addEventListener('click', () => {
   AUDIO.enabled = !AUDIO.enabled;
   $('tglSound').classList.toggle('on', AUDIO.enabled);
@@ -1403,19 +1523,18 @@ $('scnTakt').addEventListener('click', () => {
   $('scnTakt').classList.toggle('armed', E.scnTakt);
   if (E.scnTakt){
     E.eventosAndon++;
-    elog(E, 'ANDON ◉ CCR acima do takt: T/C 7.410 s vs TT 7.200 s (cenário)', 'lg-a', 'all');
+    elog(E, `ANDON ◉ Atenção — TC do CCR acima do takt: ${tcCCR(E).toLocaleString('pt-BR')} s vs ${Math.round(taktS()).toLocaleString('pt-BR')} s (cenário)`, 'lg-a', 'andon');
     AUDIO.play('amber'); flashStrips();
     toast('Cenário: Calandragem operando 30% mais lenta — acima do takt.');
   } else {
-    elog(E, 'ANDON ○ CCR de volta ao ciclo nominal (5.700 s)', 'lg-g', 'all');
+    elog(E, 'ANDON ○ Regular — TC do CCR de volta ao nominal (5.700 s)', 'lg-g', 'andon');
     AUDIO.play('ok');
     toast('CCR normalizado.');
   }
   render();
 });
 $('scnPico').addEventListener('click', () => {
-  solicitarRetirada(E, 2, 'PICO de demanda do campo');
-  elog(E, 'Pico de demanda: campo puxou +2 chapas extras', 'lg-o', 'campo');
+  solicitarRetirada(E, 2, 'pico de demanda');
   handleZoneSound();
   toast('Pico: campo retirou +2 chapas — observe cobertura e Andon.');
   render();
@@ -1447,24 +1566,36 @@ $('btnOut').addEventListener('click', () => {
 
 /* campo */
 $('qMinus').addEventListener('click', () => { qtdRetirada = Math.max(1, qtdRetirada-1); render(); });
-$('qPlus').addEventListener('click', () => { qtdRetirada = Math.min(4, qtdRetirada+1); render(); });
+$('qPlus').addEventListener('click', () => { qtdRetirada = Math.min(10, qtdRetirada+1); render(); });
 $('btnRetirar').addEventListener('click', () => {
-  const r = solicitarRetirada(E, qtdRetirada, 'solicitação do campo');
-  elog(E, `Campo solicitou retirada de ${qtdRetirada} chapa(s)`, 'lg-o', 'campo');
+  const r = solicitarRetirada(E, qtdRetirada, 'campo · manual');
   handleZoneSound();
-  toast(r.falta>0 ? `Atendidas ${r.atendido}, pendentes ${r.falta} — Andon acionado.` : `Retirada de ${r.atendido} chapa(s) expedida.`);
+  toast(r.falta>0 ? `Retiradas ${r.atendido}, pendentes ${r.falta} — Andon acionado.` : `Retirada de ${r.atendido} chapa(s) registrada.`);
   render();
 });
-$('fcRange').addEventListener('input', () => { $('fcVal').textContent = $('fcRange').value + ' ch/dia'; });
+$('fcRange').addEventListener('input', () => { $('fcVal').textContent = $('fcRange').value + ' ch/sem'; });
 $('btnFc').addEventListener('click', () => {
   const v = +$('fcRange').value;
-  E.forecastAmanha = v;
-  const ttNovo = Math.round(CFG.TD / v);
-  elog(E, `Campo enviou previsão ao PCP: ${v} ch/dia (TT alvo ${ttNovo.toLocaleString('pt-BR')} s) — vigora amanhã`, 'lg-c', 'all');
-  $('fcNote').innerHTML = `Previsão enviada: <b style="color:var(--safety)">${v} ch/dia</b> a partir de amanhã (TT alvo ${ttNovo.toLocaleString('pt-BR')} s/ch). O PCP consolida e envia previsões de 30/60 dias ao fornecedor.`;
-  toast('Previsão enviada ao PCP — retiradas de amanhã niveladas.');
+  enviarPrevisao(E, v);
+  $('fcNote').innerHTML = `Previsão vigente: <b style="color:var(--safety)">${v} ch/semana</b> (${fmtNum(v*CFG.TON,1)} t), enviada ${CFG.DIAS[E.diaSemanaIdx]}. Substitui a anterior; reseta na segunda-feira.`;
+  toast('Previsão semanal enviada ao PCP.');
   render();
 });
+
+/* filtros de Registros */
+function bindSeg(segId, setter){
+  document.querySelectorAll('#'+segId+' button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#'+segId+' button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); setter(b.dataset.m); render();
+  }));
+}
+bindSeg('segOp',    m => logModeOp = m);
+bindSeg('segCampo', m => logModeCampo = m);
+bindSeg('segGes',   m => logModeGes = m);
+
+/* agendamento de sexta */
+$('schedMinus').addEventListener('click', () => { schedQtd = Math.max(4, schedQtd-2); $('schedQtd').textContent = schedQtd+' ch'; $('schedPeso').textContent = fmtNum(schedQtd*CFG.TON,1)+' t'; });
+$('schedPlus').addEventListener('click', () => { schedQtd = Math.min(40, schedQtd+2); $('schedQtd').textContent = schedQtd+' ch'; $('schedPeso').textContent = fmtNum(schedQtd*CFG.TON,1)+' t'; });
 
 /* modais */
 $('btnMem').addEventListener('click', () => $('modMem').classList.add('open'));
@@ -1472,6 +1603,11 @@ $('btnSobre').addEventListener('click', () => $('modSobre').classList.add('open'
 document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('.modal-bg').classList.remove('open')));
 document.querySelectorAll('.modal-bg').forEach(m => m.addEventListener('click', ev => { if (ev.target===m) m.classList.remove('open'); }));
 $('btnNextDay').addEventListener('click', () => {
+  if (E.diaSemanaIdx === 4){ // sexta: grava o agendamento
+    E.entrega = { dia: +$('schedDia').value, qtd: schedQtd };
+    elog(E, `Planejamento agendou com o fornecedor: ${E.entrega.qtd} chapas (${fmtNum(E.entrega.qtd*CFG.TON,1)} t) na ${CFG.DIAS[E.entrega.dia]}`, 'lg-o', 'sys');
+    toast('Entrega agendada: ' + E.entrega.qtd + ' ch na ' + CFG.DIAS[E.entrega.dia] + '.');
+  }
   $('modSum').classList.remove('open');
   proximoDia(E);
   E.running = true;
@@ -1479,6 +1615,9 @@ $('btnNextDay').addEventListener('click', () => {
   render();
 });
 
+/* boot */
+buildKpiGrid();
+buildMetaTable();
 render();
 requestAnimationFrame(loop);
 </script>
