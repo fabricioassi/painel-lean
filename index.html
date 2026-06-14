@@ -691,7 +691,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
         </div>
       </div>
     </div></div>
-    <div class="slot-sub">Visão executiva completa: todos os indicadores do fluxo, funções Andon, status da operação, abastecimento e metas — com registros filtráveis por perfil.</div>
+    <div class="slot-sub">Visão executiva completa: indicadores VSM, funções Andon, fluxo de pré-fabricação e abastecimento — com registros filtráveis por perfil.</div>
   </div>
 </div>
 
@@ -816,7 +816,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
    PAINEL LEAN v2 — motor de simulação (VSM estado futuro)
    Unidades internas: segundos simulados. Dia: 07:30 → 16:30.
    PA: 2,5 dias (10 ch) · retiradas manuais/automáticas ·
-   entrega de MP agendada às sextas · previsão semanal
+   entrega de MP agendada às sextas
    ════════════════════════════════════════════════════════════ */
 /*ENGINE-START*/
 const CFG = {
@@ -1225,7 +1225,7 @@ function kpiValues(){
     exp:   {v: E.expedidoHoje + ' / ' + demanda(), u:' un'}
   };
 }
-function kpiNum(){ // valores numéricos crus p/ tabela de metas
+function kpiNum(){ // valores numéricos crus dos indicadores
   return {
     takt: taktS()/60, lt: leadTimeDias(E), tp: tpTotal(E)/60, tav: CFG.TAV_TOTAL/60,
     muda: mudaProc(E)/60, tcccr: tcCCR(E)/60, folga: folgaCCR(E), wip: totalWIP(E),
@@ -1365,7 +1365,7 @@ function renderGestao(){
     $('kpi-'+k.id).className = 'kpi ' + kpiState(k.id, nums);
   }
 
-  // status da operação
+  // fluxo de pré-fabricação
   $('flowGes').innerHTML = vflowHTML();
 
   // abastecimento (fornecedor de matéria-prima)
