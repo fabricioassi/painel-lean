@@ -111,6 +111,8 @@ button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 @keyframes armed{50%{outline-color:transparent}}
 .btn-ghost{background:transparent;border:1px solid var(--steel-600);color:var(--ink-dim)}
 .btn-ghost:hover{color:var(--ink)}
+.ctl-select{background:var(--steel-900);border:1px solid var(--steel-600);color:var(--ink);font-family:var(--mono);font-size:12.5px;border-radius:10px;padding:7px 9px;outline:none;cursor:pointer}
+.ctl-select:focus{border-color:var(--safety)}
 
 /* ===================== PALCO DOS TELEFONES ===================== */
 .stage{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:30px;align-items:start}
@@ -251,7 +253,7 @@ button{font-family:var(--body);cursor:pointer;border:none;color:var(--ink)}
 .vflow{display:flex;flex-direction:column;gap:4px}
 .vf-buf{display:flex;align-items:center;gap:8px;background:var(--app-bg);border:1px dashed var(--app-line2);
   border-radius:8px;padding:4px 9px;transition:border-color .3s}
-.vf-buf .vf-name{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;width:52px;flex:none}
+.vf-buf .vf-name{font-size:8.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;width:60px;flex:none}
 .vf-buf .vf-slots{display:flex;gap:3px;flex-wrap:wrap;flex:1;min-width:0}
 .vf-buf .slt{width:11px;height:13px;border-radius:3px;border:1px dashed var(--steel-600);background:transparent;transition:.25s}
 .vf-buf .slt.full{border-style:solid;border-color:transparent;background:linear-gradient(180deg,#7e93b8,#54678a);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
@@ -354,6 +356,8 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 
 /* ============ GESTÃO ============ */
 .kpigrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kpi-grp{grid-column:1/-1;font-size:8.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);margin:7px 0 1px;padding-top:7px;border-top:1px solid var(--app-line)}
+.kpi-grp:first-child{margin-top:0;padding-top:0;border-top:none}
 .kpi{background:var(--app-card2);border:1px solid var(--app-line2);border-radius:10px;padding:9px 10px;position:relative;overflow:hidden}
 .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--steel-600)}
 .kpi.k-good::before{background:var(--andon-green)} .kpi.k-warn::before{background:var(--andon-amber)}
@@ -437,12 +441,12 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
     <div class="brand-mark"></div>
     <div>
       <h1>Painel <em>Lean</em></h1>
-      <small>Simulador do protótipo Mini-MES — Andon digital · fluxo puxado · VSM estado futuro (Seção 4.1 do Projeto Final)</small>
+      <small>Protótipo Funcional Mini-MES de Fluxo Industrial</small>
     </div>
   </div>
   <div class="daychip">
     <div class="dc"><b id="hdrDay">Qua</b><span id="hdrDayN">Dia 1</span></div>
-    <div class="dc"><b id="hdrClock">07:00</b><span>Hora simulada</span></div>
+    <div class="dc"><b id="hdrClock">07:30</b><span>Hora simulada</span></div>
     <div class="dc shift"><b id="hdrShift">—</b><span>Turno 8h · TD 28.800 s</span></div>
   </div>
 </header>
@@ -464,15 +468,26 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
   <div class="ctl-group">
     <span class="ctl-label">Mundo simulado</span>
     <div class="toggle on" id="tglAuto" title="Simula os operadores lendo o QR Code automaticamente">Apontamento automático<span class="tk"></span></div>
-    <div class="toggle on" id="tglRet" title="Simula a equipe de campo retirando chapas ao longo do dia">Retiradas do campo<span class="tk"></span></div>
-    <div class="mini-step" title="Chapas retiradas pelo campo por dia (distribuídas no turno)">
+    <div class="toggle on" id="tglRet" title="Simula a retirada consolidada do campo: 1× por dia, na hora programada">Retirada do campo (1×/dia)<span class="tk"></span></div>
+    <div class="mini-step" title="Quantidade de chapas da retirada consolidada do dia">
       <button id="retMinus">−</button><b id="retVal">4 ch/dia</b><button id="retPlus">+</button>
     </div>
+    <span class="ctl-label" style="margin:0 0 0 4px">às</span>
+    <select id="retHora" class="ctl-select" title="Hora da retirada única (consolidada) no estoque de PA (E5)">
+      <option value="27000">07:30</option>
+      <option value="28800" selected>08:00</option>
+      <option value="32400">09:00</option>
+      <option value="36000">10:00</option>
+      <option value="39600">11:00</option>
+      <option value="46800">13:00</option>
+      <option value="50400">14:00</option>
+      <option value="54000">15:00</option>
+      <option value="57600">16:00</option>
+    </select>
   </div>
   <div class="ctl-group">
     <span class="ctl-label">Cenários</span>
     <button class="btn btn-scn" id="scnTakt" title="Inflaciona o ciclo da Calandragem (CCR) em +30%, acima do Takt">⚠ Ciclo &gt; Takt no CCR</button>
-    <button class="btn btn-scn" id="scnPico" title="Campo retira +2 chapas extras imediatamente">⛏ Pico de demanda</button>
   </div>
   <div class="ctl-group">
     <div class="toggle on" id="tglSound" title="Alerta sonoro do Andon (recurso do produto Mini-MES)">🔊 Som do Andon<span class="tk"></span></div>
@@ -488,7 +503,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
     <div class="slot-tag"><span class="dot"></span>Perfil 1 · Operação</div>
     <div class="phone"><div class="screen">
       <div class="notch"></div>
-      <div class="statusbar"><span id="sbClock1">07:00</span><span class="sb-icons">▂▄▆ <span>5G</span> ▮▮▮▱</span></div>
+      <div class="statusbar"><span id="sbClock1">07:30</span><span class="sb-icons">▂▄▆ <span>5G</span> ▮▮▮▱</span></div>
       <div class="appbody" id="bodyOp">
         <div class="apphead">
           <div class="app-id">
@@ -503,10 +518,10 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
         </div>
 
         <div class="sta-tabs" id="staTabs">
-          <button data-s="0">E1<small style="display:block;font-size:8px;letter-spacing:.02em">Corte</small><span class="sled"></span></button>
-          <button data-s="1" class="on">E2<small style="display:block;font-size:8px;letter-spacing:.02em">Calandra</small><span class="sled"></span></button>
-          <button data-s="2">E3<small style="display:block;font-size:8px;letter-spacing:.02em">Bisel</small><span class="sled"></span></button>
-          <button data-s="3">E4<small style="display:block;font-size:8px;letter-spacing:.02em">Pintura</small><span class="sled"></span></button>
+          <button data-s="0">P1<small style="display:block;font-size:8px;letter-spacing:.02em">Corte</small><span class="sled"></span></button>
+          <button data-s="1" class="on">P2<small style="display:block;font-size:8px;letter-spacing:.02em">Calandra</small><span class="sled"></span></button>
+          <button data-s="2">P3<small style="display:block;font-size:8px;letter-spacing:.02em">Bisel</small><span class="sled"></span></button>
+          <button data-s="3">P4<small style="display:block;font-size:8px;letter-spacing:.02em">Pintura</small><span class="sled"></span></button>
         </div>
 
         <div class="card">
@@ -535,7 +550,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
         </div>
 
         <div class="card">
-          <div class="card-title">Fluxo & Andon — VSM estado futuro <span class="hint">estoques controlados</span></div>
+          <div class="card-title">Fluxo de Pré-Fabricação <span class="hint">estoques controlados</span></div>
           <div class="vflow" id="flowOp"></div>
         </div>
 
@@ -547,7 +562,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
         </div>
       </div>
     </div></div>
-    <div class="slot-sub">Aponta entrada/saída por QR Code em cada etapa, acompanha o tempo de processamento vs takt e o Andon — produz somente o que o campo puxa.</div>
+    <div class="slot-sub">Aponta entrada/saída por QR Code em cada processo (P1–P4), acompanha o tempo de processamento vs takt e o Andon — produz somente o que o campo puxa.</div>
   </div>
 
   <!-- ===== PERFIL 2: CAMPO ===== -->
@@ -555,11 +570,11 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
     <div class="slot-tag"><span class="dot"></span>Perfil 2 · Campo</div>
     <div class="phone"><div class="screen">
       <div class="notch"></div>
-      <div class="statusbar"><span id="sbClock2">07:00</span><span class="sb-icons">▂▄▆ <span>4G</span> ▮▮▱▱</span></div>
+      <div class="statusbar"><span id="sbClock2">07:30</span><span class="sb-icons">▂▄▆ <span>4G</span> ▮▮▱▱</span></div>
       <div class="appbody">
         <div class="apphead">
           <div class="app-id">
-            <h2>Mini-MES – Montagem<small>Expedição – Campo – Montagem de Tanque</small></h2>
+            <h2>Mini-MES – Montagem<small>Acompanhamento de PA – Retirada – Montagem de Tanques Atmosféricos</small></h2>
             <span class="role-emblem emblem-campo">CAMPO</span>
           </div>
         </div>
@@ -608,23 +623,6 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
         </div>
 
         <div class="card">
-          <div class="card-title">Previsão de demanda → PCP <span class="hint">semanal · informativa</span></div>
-          <div class="sliderrow">
-            <input type="range" id="fcRange" min="8" max="40" step="1" value="20">
-            <b id="fcVal">20 ch/sem</b>
-          </div>
-          <button class="btn" id="btnFc" style="width:100%;justify-content:center">📡 Enviar previsão semanal ao PCP</button>
-          <div style="font-size:10px;color:var(--ink-faint);margin-top:7px;line-height:1.5" id="fcNote">
-            Sem previsão enviada nesta semana. O envio substitui o valor anterior e o registro reseta toda segunda-feira.
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Transparência do fluxo</div>
-          <div class="flowbadge" id="campoFlow"><span class="led"></span><span id="campoFlowTxt">Fabricação em ritmo normal — sem alertas Andon ativos.</span></div>
-        </div>
-
-        <div class="card">
           <div class="card-title">Registros
             <span class="logseg" id="segCampo"><button data-m="campo" class="on">Campo</button><button data-m="all">Geral</button></span>
           </div>
@@ -632,7 +630,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
         </div>
       </div>
     </div></div>
-    <div class="slot-sub">Cliente interno que puxa o fluxo: registra retiradas no ato, acompanha o disponível e a cobertura, e envia a previsão semanal ao PCP.</div>
+    <div class="slot-sub">Cliente interno que puxa o fluxo: registra a retirada no ato e acompanha o disponível e a cobertura do E5-PA.</div>
   </div>
 
   <!-- ===== PERFIL 3: GESTÃO ===== -->
@@ -640,7 +638,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
     <div class="slot-tag"><span class="dot"></span>Perfil 3 · Gestão</div>
     <div class="phone"><div class="screen">
       <div class="notch"></div>
-      <div class="statusbar"><span id="sbClock3">07:00</span><span class="sb-icons">▂▄▆ <span>5G</span> ▮▮▮▮</span></div>
+      <div class="statusbar"><span id="sbClock3">07:30</span><span class="sb-icons">▂▄▆ <span>5G</span> ▮▮▮▮</span></div>
       <div class="appbody">
         <div class="apphead">
           <div class="app-id">
@@ -660,17 +658,17 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
         </div>
 
         <div class="card">
-          <div class="card-title">Indicadores de fluxo <span class="hint">ao vivo</span></div>
-          <div class="kpigrid" id="kpiGrid"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Status da operação <span class="hint">estações & estoques</span></div>
+          <div class="card-title">Fluxo de Pré-Fabricação <span class="hint">estações & estoques</span></div>
           <div class="vflow" id="flowGes"></div>
         </div>
 
         <div class="card">
-          <div class="card-title">Abastecimento & previsão</div>
+          <div class="card-title">Indicadores VSM <span class="hint">ao vivo</span></div>
+          <div class="kpigrid" id="kpiGrid"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Abastecimento <span class="hint">matéria-prima (E1-MP)</span></div>
           <div class="sup-grid">
             <div class="sup">
               <div class="s-tag">Entrega do fornecedor</div>
@@ -678,19 +676,11 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
               <small id="supEntregaSub">14,6 t · agendada</small>
             </div>
             <div class="sup">
-              <div class="s-tag">Previsão do campo (semana)</div>
-              <b id="supPrev">—</b>
-              <small id="supPrevSub">aguardando envio</small>
+              <div class="s-tag">Estoque atual de E1-MP</div>
+              <b id="supMP">10 ch</b>
+              <small id="supMPSub">7,3 t em estoque</small>
             </div>
           </div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Indicadores → objetivos <span class="hint">atual ao vivo · objetivo editável</span></div>
-          <table class="meta-table" id="metaTable">
-            <thead><tr><th>Indicador</th><th>Atual</th><th>Objetivo</th><th>Δ%</th></tr></thead>
-            <tbody></tbody>
-          </table>
         </div>
 
         <div class="card">
@@ -707,7 +697,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 
 <!-- ============ RODAPÉ ============ -->
 <footer class="deskfoot">
-  <span>MVP (Seção 3.2): <b style="color:var(--ink)">apontamento QR</b> · <b style="color:var(--ink)">painel com Andon</b> · <b style="color:var(--ink)">módulo de campo</b> — operando o VSM futuro com supermercado de PA de 2,5 dias (10 ch), FIFOs e pulmão DBR no CCR.</span>
+  <span>MVP: <b style="color:var(--ink)">apontamento QR</b> · <b style="color:var(--ink)">painel com Andon</b> · <b style="color:var(--ink)">módulo de campo</b> — operando o VSM futuro com supermercado de PA de 2,5 dias (10 ch), FIFOs e pulmão DBR no CCR.</span>
   <div class="links">
     <button class="btn btn-ghost" id="btnMem">ƒ Memória de cálculo</button>
     <button class="btn btn-ghost" id="btnSobre">ⓘ Sobre o protótipo</button>
@@ -725,7 +715,7 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
     <p><code class="formula">TT = TD / D = 28.800 s ÷ 4 ch/dia = 7.200 s/ch = 120 min/ch (2 h/ch)</code></p>
     <h4>Lead Time de Produção (Lei de Little, em dias úteis)</h4>
     <p><code class="formula">LT = (WIP<sub>estoques</sub> / D) + (Σ TC / TD) = (28 ÷ 4) + (16.500 ÷ 28.800) = 7,00 + 0,57 = 7,57 dias</code></p>
-    <p>WIP nominal de estoques: MP 10 (2,5 d) + pulmão 4 (1 d) + FIFO 2 (0,5 d) + FIFO 2 (0,5 d) + PA 10 (2,5 d) = <b>28 chapas</b>. O simulador recalcula o LT a cada instante com o WIP corrente.</p>
+    <p>WIP nominal de estoques: E1-MP 10 (2,5 d) + E2-CCR 4 (1 d) + E3-FIFO1 2 (0,5 d) + E4-FIFO2 2 (0,5 d) + E5-PA 10 (2,5 d) = <b>28 chapas</b>. O simulador recalcula o LT a cada instante com o WIP corrente.</p>
     <h4>Tempo de Processamento, Agregação de Valor e Muda</h4>
     <p><code class="formula">Σ TC = 3.900 + 5.700 + 3.300 + 3.600 = 16.500 s = 275 min</code></p>
     <p><code class="formula">Σ TAV = 3.600 + 5.400 + 3.000 + 3.300 = 15.300 s = 255 min</code></p>
@@ -740,19 +730,19 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
     <h4>Zonas Andon — padrão Regular / Atenção / Crítico</h4>
     <table>
       <tr><th>Função monitorada</th><th>Regular 🟢</th><th>Atenção 🟡</th><th>Crítico 🔴</th><th>Alerta para</th></tr>
-      <tr><td>Estoque PA (máx 10)</td><td>≥ 1,5 d (≥ 6 ch)</td><td>1 a 1,5 d (4–5 ch)</td><td>&lt; 1 d (≤ 3 ch)</td><td>P1 · P2 · P3</td></tr>
-      <tr><td>Pulmão do CCR (máx 4)</td><td>≥ 3 ch</td><td>2 ch</td><td>≤ 1 ch</td><td>P1 · P3</td></tr>
-      <tr><td>Estoque MP</td><td>≥ 6 ch</td><td>3–5 ch</td><td>≤ 2 ch</td><td>P1 · P3</td></tr>
-      <tr><td>TC do CCR vs Takt</td><td>TC ≤ TT</td><td>TC &gt; TT</td><td>CCR sem abastecimento</td><td>P1 · P3</td></tr>
+      <tr><td>E5-PA (máx 10)</td><td>≥ 1,5 d (≥ 6 ch)</td><td>1 a 1,5 d (4–5 ch)</td><td>&lt; 1 d (≤ 3 ch)</td><td>Operação · Campo · Gestão</td></tr>
+      <tr><td>E2-CCR · pulmão (máx 4)</td><td>≥ 3 ch</td><td>2 ch</td><td>≤ 1 ch</td><td>Operação · Gestão</td></tr>
+      <tr><td>E1-MP</td><td>≥ 6 ch</td><td>3–5 ch</td><td>≤ 2 ch</td><td>Operação · Gestão</td></tr>
+      <tr><td>TC do CCR vs Takt</td><td>TC ≤ TT</td><td>TC &gt; TT</td><td>CCR sem abastecimento</td><td>Operação · Gestão</td></tr>
     </table>
-    <p>O Andon de estoque cruza a zona e dispara alerta visual + sonoro. <b>Não autoriza produzir além dos limites</b> dos supermercados — a resposta correta é proteger o CCR e escoar os kanbans pendentes. O vermelho do PA (&lt; 1 dia) preserva margem: a reposição via CCR + FIFOs leva ≈ 3,5 h úteis.</p>
+    <p>O Andon de estoque cruza a zona e dispara alerta visual + sonoro. <b>Não autoriza produzir além dos limites</b> dos supermercados — a resposta correta é proteger o CCR e escoar os kanbans pendentes. O vermelho do E5-PA (&lt; 1 dia) preserva margem: a reposição via P2 (CCR) + FIFOs leva ≈ 3,5 h úteis.</p>
     <h4>Dados das estações (estado futuro)</h4>
     <table>
-      <tr><th>Etapa</th><th>TAV (s)</th><th>TM (s)</th><th>T/C (s)</th><th>T/C (min)</th></tr>
-      <tr><td>E1 Esquadrejamento/Corte</td><td>3.600</td><td>300</td><td>3.900</td><td>65</td></tr>
-      <tr><td>E2 Calandragem (CCR)</td><td>5.400</td><td>300</td><td>5.700</td><td>95</td></tr>
-      <tr><td>E3 Biselamento</td><td>3.000</td><td>300</td><td>3.300</td><td>55</td></tr>
-      <tr><td>E4 Pintura</td><td>3.300</td><td>300</td><td>3.600</td><td>60</td></tr>
+      <tr><th>Processo</th><th>TAV (s)</th><th>TM (s)</th><th>T/C (s)</th><th>T/C (min)</th></tr>
+      <tr><td>P1 Esquadrejamento/Corte</td><td>3.600</td><td>300</td><td>3.900</td><td>65</td></tr>
+      <tr><td>P2 Calandragem (CCR)</td><td>5.400</td><td>300</td><td>5.700</td><td>95</td></tr>
+      <tr><td>P3 Biselamento</td><td>3.000</td><td>300</td><td>3.300</td><td>55</td></tr>
+      <tr><td>P4 Pintura</td><td>3.300</td><td>300</td><td>3.600</td><td>60</td></tr>
     </table>
     <h4>Nota de coerência com o artigo</h4>
     <p>O artigo dimensiona o PA em 1 dia (4 ch), com LT 6,07 d e ECP 8,75%. O simulador adota PA de <b>2,5 dias (10 ch)</b> — decisão de robustez do abastecimento ao campo — resultando em LT 7,57 d e ECP 7,02%. O ganho vs. estado atual permanece expressivo: LT −42,5% (13,16 → 7,57 d) e ECP +73,8% (4,04 → 7,02%), com WIP −44% (50 → 28 ch).</p>
@@ -766,23 +756,22 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
     <h3>Sobre o <em>protótipo</em></h3>
     <div class="m-sub">Simulador navegável do MVP descrito no Projeto Final — uma operação viva do VSM futuro em três perfis de acesso.</div>
     <h4>Produto vs. ambiente de simulação</h4>
-    <p><b>O produto Mini-MES é o que está dentro dos smartphones</b>: apontamento por QR Code, painéis Andon (Regular/Atenção/Crítico, com alerta sonoro), indicadores de fluxo, registro de retiradas e previsão de demanda. <b>A barra superior é o ambiente de simulação</b>, que substitui o mundo real: relógio acelerado, operadores apontando automaticamente, equipe de campo retirando chapas ao longo do dia e cenários de distúrbio. Em produção, esses eventos viriam do chão de fábrica e da obra — aqui, são gerados para demonstrar o software.</p>
+    <p><b>O produto Mini-MES é o que está dentro dos smartphones</b>: apontamento por QR Code, painéis Andon (Regular/Atenção/Crítico, com alerta sonoro), indicadores de fluxo e registro de retiradas. <b>A barra superior é o ambiente de simulação</b>, que substitui o mundo real: relógio acelerado, operadores apontando automaticamente, equipe de campo fazendo a retirada consolidada do dia e cenários de distúrbio. Em produção, esses eventos viriam do chão de fábrica e da obra — aqui, são gerados para demonstrar o software.</p>
     <h4>O que está sendo simulado</h4>
-    <p>Turnos de 8 h (07:00–17:00, almoço 12:00–13:00) do galpão de preparo de chapas de aço (730 kg/un) para tanques API-650, operando o <b>VSM do estado futuro</b>: supermercado de PA de 2,5 dias (máx 10 ch), FIFOs de 2 chapas entre E2→E3→E4, pulmão de 1 dia protegendo a Calandragem (CCR/Tambor — processo puxador) e estoque de MP reposto por entrega semanal agendada.</p>
+    <p>Turnos de 8 h (07:30–16:30, almoço 12:00–13:00) do galpão de preparo de chapas de aço (730 kg/un) para tanques API-650, operando o <b>VSM do estado futuro</b>: supermercado de PA (E5) de 2,5 dias (máx 10 ch), FIFOs de 2 chapas entre P2→P3→P4, pulmão (E2-CCR) de 1 dia protegendo a Calandragem (P2/CCR — processo puxador) e estoque de MP (E1) reposto por entrega semanal agendada.</p>
     <h4>Lógica puxada implementada</h4>
     <ul style="padding-left:18px">
       <li>O campo registra a retirada no ato (manual, por conveniência da montagem) → cada chapa retirada gera um <b>kanban de produção</b> para a Calandragem.</li>
       <li>A Calandragem só produz com kanban pendente, chapa no pulmão e vaga no FIFO — nunca além dos limites.</li>
-      <li>E3 e E4 escoam por FIFO; E1 repõe o pulmão puxando da MP.</li>
+      <li>P3 e P4 escoam por FIFO; P1 repõe o pulmão (E2-CCR) puxando do E1-MP.</li>
       <li>Toda sexta, no fim do expediente, o planejamento agenda com o fornecedor a <b>quantidade e o dia da entrega</b> de MP da semana seguinte.</li>
-      <li>O campo envia ao PCP uma <b>previsão semanal</b> de consumo (informativa; substitui a anterior e reseta na segunda-feira).</li>
+
     </ul>
     <h4>Perfis de acesso</h4>
-    <p><b>Operação (Fabricação)</b> — apontamento QR, tempo de processamento vs takt e T/C, fluxo & Andon integrados, registros. <b>Campo (Montagem)</b> — disponível para retirada, cobertura, registro de retirada, previsão semanal, registros. <b>Gestão (ADM)</b> — todos os indicadores, funções Andon, status da operação, abastecimento & previsão, objetivos editáveis e registros filtráveis por perfil.</p>
+    <p><b>Operação (Fabricação)</b> — apontamento QR, tempo de processamento vs takt e T/C, fluxo de pré-fabricação & Andon, registros. <b>Campo (Montagem)</b> — disponível para retirada, cobertura e registro de retirada, registros. <b>Gestão (ADM)</b> — todos os indicadores VSM, funções Andon, fluxo de pré-fabricação, abastecimento e registros filtráveis por perfil.</p>
     <h4>Andon padronizado</h4>
-    <p>Três níveis em todos os perfis: 🟢 <b>Regular</b>, 🟡 <b>Atenção</b>, 🔴 <b>Crítico</b>. Escopo por perfil: estoque MP (P1, P3), estoque PA (P1, P2, P3), pulmão do CCR (P1, P3) e TC do CCR vs Takt (P1, P3). Mensagens do Andon aparecem nos Registros de todos os perfis, em qualquer filtro.</p>
-    <h4>Vínculo com o Projeto Final</h4>
-    <p>Entrega da Seção 4.1 (protótipo navegável das 3 funcionalidades do MVP — Seção 3.2). Com o PA revisado para 2,5 dias: LT 7,57 d (−42,5% vs. atual), WIP 28 ch (−44%) e ECP 7,02% (+73,8%).</p>
+    <p>Três níveis em todos os perfis: 🟢 <b>Regular</b>, 🟡 <b>Atenção</b>, 🔴 <b>Crítico</b>. Escopo por perfil: E1-MP (Operação, Gestão), E5-PA (Operação, Campo, Gestão), E2-CCR/pulmão (Operação, Gestão) e TC do CCR vs Takt (Operação, Gestão). Mensagens do Andon aparecem nos Registros de todos os perfis, em qualquer filtro.</p>
+
   </div>
 </div>
 
@@ -825,23 +814,23 @@ input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;bac
 <script>
 /* ════════════════════════════════════════════════════════════
    PAINEL LEAN v2 — motor de simulação (VSM estado futuro)
-   Unidades internas: segundos simulados. Dia: 07:00 → 17:00.
+   Unidades internas: segundos simulados. Dia: 07:30 → 16:30.
    PA: 2,5 dias (10 ch) · retiradas manuais/automáticas ·
    entrega de MP agendada às sextas · previsão semanal
    ════════════════════════════════════════════════════════════ */
 /*ENGINE-START*/
 const CFG = {
   TD: 28800, DEMANDA: 4, TAV_TOTAL: 15300,
-  DAY_START: 7*3600, DAY_END: 17*3600, LUNCH_A: 12*3600, LUNCH_B: 13*3600,
+  DAY_START: 7.5*3600, DAY_END: 16.5*3600, LUNCH_A: 12*3600, LUNCH_B: 13*3600,
   TON: 0.73,
   STATIONS: [
-    {id:'E1', nome:'Esquadrej./Corte', sub:'Repõe o pulmão do CCR', tc:3900, tav:3600},
-    {id:'E2', nome:'Calandragem', sub:'CCR · Processo Puxador', tc:5700, tav:5400, ccr:true},
-    {id:'E3', nome:'Biselamento', sub:'Fluxo FIFO', tc:3300, tav:3000},
-    {id:'E4', nome:'Pintura', sub:'Abastece o PA', tc:3600, tav:3300}
+    {id:'P1', nome:'Esquadrej./Corte', sub:'Repõe o pulmão E2-CCR', tc:3900, tav:3600},
+    {id:'P2', nome:'Calandragem', sub:'CCR · Processo Puxador', tc:5700, tav:5400, ccr:true},
+    {id:'P3', nome:'Biselamento', sub:'Fluxo FIFO', tc:3300, tav:3000},
+    {id:'P4', nome:'Pintura', sub:'Abastece o E5-PA', tc:3600, tav:3300}
   ],
   BUF: { MP:{max:40, start:10}, PUL:{max:4, start:4}, F23:{max:2, start:2}, F34:{max:2, start:2}, PA:{max:10, start:9} },
-  RET_ON: true, RET_DIA: 4,        // retiradas automáticas do campo (parâmetro do simulador)
+  RET_ON: true, RET_DIA: 4, RET_HORA: 8*3600,        // retirada consolidada do campo (1×/dia, parâmetro do simulador)
   DIAS: ['Segunda','Terça','Quarta','Quinta','Sexta'],
   DIA_INICIAL: 2 // Quarta — MP no nível médio (10)
 };
@@ -857,11 +846,11 @@ function novoEngine(){
     backorder: 0,
     seqChapa: 147,
     st: CFG.STATIONS.map(s => ({ id:s.id, state:'idle', rem:0, tcRun:s.tc, chapa:null, prodHoje:0, busyHoje:0, readyIn:false, readyOut:false })),
-    autoRet: 0,           // retiradas automáticas já feitas hoje
+    autoRetFeita: false,           // retirada consolidada já feita hoje
     expedidoHoje: 0, solicitadoHoje: 0, atendidoNoAto: 0, lastRetT: null,
     entrega: {dia:0, qtd:20},   // agendamento vigente com o fornecedor
     entregueSemana: true,       // a entrega desta semana (Seg) já ocorreu — começamos na Quarta
-    prevSemana: null, prevDia: null,  // previsão semanal do campo (informativa)
+
     scnTakt: false, taktFactor: 1.3,
     eventosAndon: 0,
     zonas: { PA:'green', PUL:'green', MP:'green' },
@@ -918,12 +907,6 @@ function atenderBackorder(e){
   }
 }
 
-/* ——— previsão semanal (informativa) ——— */
-function enviarPrevisao(e, qtd){
-  e.prevSemana = qtd; e.prevDia = CFG.DIAS[e.diaSemanaIdx];
-  elog(e, `Campo enviou previsão semanal ao PCP: ${qtd} ch (${(qtd*CFG.TON).toFixed(1).replace('.',',')} t) — substitui a anterior`, 'lg-c', 'campo');
-}
-
 /* ——— estações ——— */
 function podeIniciar(e, i){
   if (!isWork(e) || e.fimDoDia) return false;
@@ -975,13 +958,10 @@ function step(e, dt, autoMode){
   if (e.fimDoDia) return;
   e.clock += dt;
 
-  // retiradas automáticas do campo, distribuídas no turno
-  if (CFG.RET_ON){
-    const N = CFG.RET_DIA;
-    while (e.autoRet < N && workedSecs(e) >= (e.autoRet + 0.5) * CFG.TD / N){
-      solicitarRetirada(e, 1, 'campo · auto');
-      e.autoRet++;
-    }
+  // retirada consolidada do campo — uma única vez ao dia, na hora programada (RET_HORA)
+  if (CFG.RET_ON && !e.autoRetFeita && e.clock >= CFG.RET_HORA){
+    solicitarRetirada(e, CFG.RET_DIA, 'campo · retirada consolidada');
+    e.autoRetFeita = true;
   }
 
   // estações (jusante → montante)
@@ -1027,12 +1007,10 @@ function step(e, dt, autoMode){
 function proximoDia(e){
   e.dia++; e.diaSemanaIdx = (e.diaSemanaIdx + 1) % 5;
   e.clock = CFG.DAY_START; e.fimDoDia = false;
-  e.autoRet = 0; e.expedidoHoje = 0; e.solicitadoHoje = 0; e.atendidoNoAto = 0; e.lastRetT = null;
+  e.autoRetFeita = false; e.expedidoHoje = 0; e.solicitadoHoje = 0; e.atendidoNoAto = 0; e.lastRetT = null;
   e.st.forEach(s => { s.prodHoje = 0; s.busyHoje = 0; });
   if (e.diaSemanaIdx === 0){ // segunda: nova semana
     e.entregueSemana = false;
-    if (e.prevSemana != null) elog(e, `Nova semana — previsão do campo resetada (anterior: ${e.prevSemana} ch)`, 'lg-c', 'sys');
-    e.prevSemana = null; e.prevDia = null;
   }
   if (!e.entregueSemana && e.diaSemanaIdx === e.entrega.dia){
     e.buf.MP = Math.min(CFG.BUF.MP.max, e.buf.MP + e.entrega.qtd);
@@ -1089,20 +1067,20 @@ elog(E, '1 kanban pendente da retirada de ontem', 'lg-o', 'op');
 const ZLVL = {green:0, amber:1, red:2};
 function andonFuncs(){
   const f = {};
-  f.MP  = { z: E.zonas.MP, nome:'Estoque MP',
+  f.MP  = { z: E.zonas.MP, nome:'E1-MP',
             msg: E.zonas.MP==='red' ? `MP com ${E.buf.MP} chapa(s) — acionar fornecedor.` :
                  E.zonas.MP==='amber' ? `MP com ${E.buf.MP} chapas — entrega agendada: ${CFG.DIAS[E.entrega.dia]}.` : 'MP abastecida.' };
   let zPA = E.zonas.PA, msgPA = 'Estoque de PA dentro da zona verde.';
   if (E.backorder > 0){ zPA = 'red'; msgPA = `${E.backorder} chapa(s) pendente(s) ao campo — escoar kanbans já.`; }
   else if (zPA==='red') msgPA = `PA com ${E.buf.PA} chapa(s) (cobertura < 1 dia) — risco ao campo.`;
   else if (zPA==='amber') msgPA = `PA com ${E.buf.PA} chapas — priorizar fluxo até a zona verde.`;
-  f.PA  = { z: zPA, nome:'Estoque PA', msg: msgPA };
+  f.PA  = { z: zPA, nome:'E5-PA', msg: msgPA };
   let zPUL = E.zonas.PUL, msgPUL = 'Pulmão do CCR protegido.';
   const starving = E.st[1].state==='idle' && E.kanban>0 && E.buf.PUL===0;
-  if (starving){ zPUL = 'red'; msgPUL = 'CCR sem abastecimento — E1 deve repor o pulmão imediatamente.'; }
+  if (starving){ zPUL = 'red'; msgPUL = 'CCR sem abastecimento — P1 deve repor o pulmão (E2-CCR) imediatamente.'; }
   else if (zPUL==='red') msgPUL = `Pulmão com ${E.buf.PUL} chapa(s) — Tambor em risco de inanição.`;
-  else if (zPUL==='amber') msgPUL = `Pulmão com ${E.buf.PUL} chapas — E1 repondo.`;
-  f.PUL = { z: zPUL, nome:'Pulmão CCR', msg: msgPUL };
+  else if (zPUL==='amber') msgPUL = `Pulmão (E2-CCR) com ${E.buf.PUL} chapas — P1 repondo.`;
+  f.PUL = { z: zPUL, nome:'E2-CCR', msg: msgPUL };
   f.TCT = { z: E.scnTakt ? 'amber' : 'green', nome:'TC vs Takt',
             msg: E.scnTakt ? `CCR a ${tcCCR(E).toLocaleString('pt-BR')} s vs takt ${Math.round(taktS()).toLocaleString('pt-BR')} s — folga negativa.` : 'CCR dentro do takt.' };
   return f;
@@ -1183,15 +1161,15 @@ function slotsHTML(count, max){
 }
 function vflowHTML(){
   const bufs = [
-    {k:'MP',  nome:'MP',     c:E.buf.MP,  max:10, zone:E.zonas.MP, open:true},
+    {k:'MP',  nome:'E1 MP',    c:E.buf.MP,  max:10, zone:E.zonas.MP, open:true},
     {m:0},
-    {k:'PUL', nome:'Pulmão', c:E.buf.PUL, max:4,  zone:E.zonas.PUL},
+    {k:'PUL', nome:'E2 CCR',   c:E.buf.PUL, max:4,  zone:E.zonas.PUL},
     {m:1},
-    {k:'F23', nome:'FIFO',   c:E.buf.F23, max:2,  zone:'green'},
+    {k:'F23', nome:'E3 FIFO1', c:E.buf.F23, max:2,  zone:'green'},
     {m:2},
-    {k:'F34', nome:'FIFO',   c:E.buf.F34, max:2,  zone:'green'},
+    {k:'F34', nome:'E4 FIFO2', c:E.buf.F34, max:2,  zone:'green'},
     {m:3},
-    {k:'PA',  nome:'PA',     c:E.buf.PA,  max:10, zone:E.zonas.PA}
+    {k:'PA',  nome:'E5 PA',    c:E.buf.PA,  max:10, zone:E.zonas.PA}
   ];
   let h = '';
   for (const b of bufs){
@@ -1217,18 +1195,18 @@ function vflowHTML(){
 
 /* ════════════════ KPIs DA GESTÃO (esqueleto estático) ════════════════ */
 const KPIS = [
-  {id:'takt',  nome:'Takt Time',                       unit:'min'},
-  {id:'lt',    nome:'Lead Time de Produção',           unit:'dias'},
-  {id:'tp',    nome:'Tempo de Processamento',          unit:'min'},
-  {id:'tav',   nome:'Tempo de Agregação de Valor',     unit:'min'},
-  {id:'muda',  nome:'Muda de Processamento',           unit:'min'},
-  {id:'tcccr', nome:'TC do CCR',                       unit:'min'},
-  {id:'folga', nome:'Folga do CCR sobre o Takt',       unit:'%'},
-  {id:'wip',   nome:'WIP total',                       unit:''},
-  {id:'cobpa', nome:'Cobertura de Estoque de PA',      unit:'dias'},
-  {id:'cobtot',nome:'Cobertura de Estoque Total',      unit:'dias'},
-  {id:'ecp',   nome:'Eficiência do Ciclo de Produção', unit:'%'},
-  {id:'exp',   nome:'Expedido Hoje',                   unit:''}
+  {id:'takt',  nome:'Takt Time',                       unit:'min',  grp:'Balanceamento · Takt × CCR'},
+  {id:'tcccr', nome:'TC do CCR',                       unit:'min',  grp:'Balanceamento · Takt × CCR'},
+  {id:'folga', nome:'Folga do CCR sobre o Takt',       unit:'%',    grp:'Balanceamento · Takt × CCR'},
+  {id:'tp',    nome:'Tempo de Processamento',          unit:'min',  grp:'Tempos & Lead Time'},
+  {id:'tav',   nome:'Tempo de Agregação de Valor',     unit:'min',  grp:'Tempos & Lead Time'},
+  {id:'muda',  nome:'Muda de Processamento',           unit:'min',  grp:'Tempos & Lead Time'},
+  {id:'lt',    nome:'Lead Time de Produção',           unit:'dias', grp:'Tempos & Lead Time'},
+  {id:'cobpa', nome:'Cobertura de Estoque de PA',      unit:'dias', grp:'Estoques & Cobertura'},
+  {id:'cobtot',nome:'Cobertura de Estoque Total',      unit:'dias', grp:'Estoques & Cobertura'},
+  {id:'wip',   nome:'WIP total',                       unit:'',     grp:'Estoques & Cobertura'},
+  {id:'ecp',   nome:'Eficiência do Ciclo de Produção', unit:'%',    grp:'Resultado'},
+  {id:'exp',   nome:'Expedido Hoje',                   unit:'',     grp:'Resultado'}
 ];
 function kpiValues(){
   const wip = totalWIP(E);
@@ -1241,8 +1219,8 @@ function kpiValues(){
     tcccr: {v: fmtNum(tcCCR(E)/60,(tcCCR(E)%60)?1:0), u:' min'},
     folga: {v: fmtNum(folgaCCR(E),1), u:' %'},
     wip:   {v: String(wip), u:' un · '+fmtNum(wip*CFG.TON,1)+' t'},
-    cobpa: {v: fmtNum(coberturaPA(E),2), u:' dias'},
-    cobtot:{v: fmtNum(coberturaTotal(E),2), u:' dias'},
+    cobpa: {v: fmtNum(coberturaPA(E),2), u:' dias · '+E.buf.PA+' ch'},
+    cobtot:{v: fmtNum(coberturaTotal(E),2), u:' dias · '+totalWIP(E)+' ch'},
     ecp:   {v: fmtNum(ecpPct(E),2), u:' %'},
     exp:   {v: E.expedidoHoje + ' / ' + demanda(), u:' un'}
   };
@@ -1267,20 +1245,14 @@ function kpiState(id, n){
     default:      return 'k-info';
   }
 }
-const METAS_DEF = { takt:120, lt:7.57, tp:275, tav:255, muda:20, tcccr:95, folga:20.8, wip:28, cobpa:2.5, cobtot:7.0, ecp:7.02, exp:4 };
+
 function buildKpiGrid(){
-  $('kpiGrid').innerHTML = KPIS.map(k =>
-    `<div class="kpi k-info" id="kpi-${k.id}"><div class="k-name">${k.nome}</div><div class="k-val" id="kv-${k.id}">—</div></div>`
-  ).join('');
-}
-function buildMetaTable(){
-  const tb = $('metaTable').querySelector('tbody');
-  tb.innerHTML = KPIS.map(k =>
-    `<tr><td>${k.nome}${k.unit?' ('+k.unit+')':''}</td>` +
-    `<td id="mta-${k.id}">—</td>` +
-    `<td><input type="number" step="any" id="mto-${k.id}" value="${METAS_DEF[k.id]}"></td>` +
-    `<td class="mt-var" id="mtv-${k.id}">—</td></tr>`
-  ).join('');
+  let html = '', lastGrp = null;
+  for (const k of KPIS){
+    if (k.grp !== lastGrp){ html += `<div class="kpi-grp">${k.grp}</div>`; lastGrp = k.grp; }
+    html += `<div class="kpi k-info" id="kpi-${k.id}"><div class="k-name">${k.nome}</div><div class="k-val" id="kv-${k.id}">—</div></div>`;
+  }
+  $('kpiGrid').innerHTML = html;
 }
 
 /* ════════════════ RENDER ════════════════ */
@@ -1374,12 +1346,6 @@ function renderCampo(){
   $('nxPendBox').classList.toggle('alert', E.backorder>0);
   $('nxUlt').textContent = E.lastRetT != null ? fmtHM(E.lastRetT) : '—';
 
-  const fb = $('campoFlow'), g = andonFor(2);
-  fb.classList.remove('warn','crit');
-  if (g.lvl==='red') fb.classList.add('crit');
-  else if (g.lvl==='amber') fb.classList.add('warn');
-  $('campoFlowTxt').textContent = g.lvl==='green' ? 'Fabricação em ritmo normal — sem alertas Andon ativos.' : 'Andon ' + g.titulo + ' na fabricação — ' + g.msg;
-
   renderLog('logCampo', logModeCampo);
 }
 
@@ -1402,28 +1368,11 @@ function renderGestao(){
   // status da operação
   $('flowGes').innerHTML = vflowHTML();
 
-  // abastecimento & previsão
+  // abastecimento (fornecedor de matéria-prima)
   $('supEntrega').textContent = CFG.DIAS[E.entrega.dia].slice(0,3) + ' · ' + E.entrega.qtd + ' ch';
   $('supEntregaSub').innerHTML = fmtNum(E.entrega.qtd*CFG.TON,1) + ' t · ' + (E.entregueSemana ? '<span class="s-ok">entregue nesta semana ✓</span>' : 'agendada');
-  if (E.prevSemana != null){
-    $('supPrev').textContent = E.prevSemana + ' ch/sem';
-    $('supPrevSub').textContent = fmtNum(E.prevSemana*CFG.TON,1) + ' t · enviada ' + (E.prevDia||'');
-  } else {
-    $('supPrev').textContent = '—';
-    $('supPrevSub').textContent = 'sem previsão nesta semana';
-  }
-
-  // metas: atual ao vivo + Δ%
-  for (const k of KPIS){
-    $('mta-'+k.id).textContent = (k.id==='wip'||k.id==='exp') ? String(Math.round(nums[k.id])) : fmtNum(nums[k.id], (k.id==='takt'||k.id==='tp'||k.id==='tav')?0:2);
-    const objEl = $('mto-'+k.id);
-    const obj = parseFloat(objEl.value);
-    const cur = nums[k.id];
-    if (!isNaN(obj) && Math.abs(cur) > 1e-9){
-      const dv = (obj-cur)/Math.abs(cur)*100;
-      $('mtv-'+k.id).textContent = (dv>0?'+':'') + fmtNum(dv,1) + '%';
-    } else $('mtv-'+k.id).textContent = '—';
-  }
+  $('supMP').textContent = E.buf.MP + ' ch';
+  $('supMPSub').textContent = fmtNum(E.buf.MP*CFG.TON,1) + ' t em estoque';
 
   renderLog('logGestor', logModeGes);
 }
@@ -1452,13 +1401,11 @@ function abrirResumo(){
   const sexta = E.diaSemanaIdx === 4;
   $('schedSec').style.display = sexta ? 'block' : 'none';
   if (sexta){
-    schedQtd = E.prevSemana != null ? E.prevSemana : E.entrega.qtd;
+    schedQtd = E.entrega.qtd;
     $('schedDia').value = String(E.entrega.dia);
     $('schedQtd').textContent = schedQtd + ' ch';
     $('schedPeso').textContent = fmtNum(schedQtd*CFG.TON,1) + ' t';
-    $('schedHint').textContent = E.prevSemana != null
-      ? 'Sugestão pré-carregada com a previsão semanal enviada pelo campo (' + E.prevSemana + ' ch).'
-      : 'Sem previsão do campo nesta semana — pré-carregado com o último agendamento.';
+    $('schedHint').textContent = 'Pré-carregado com o último agendamento ao fornecedor.';
     $('btnNextDay').innerHTML = '▶ Agendar entrega e iniciar a próxima semana';
   } else {
     $('btnNextDay').innerHTML = '▶ Iniciar próximo dia';
@@ -1506,11 +1453,12 @@ $('tglAuto').addEventListener('click', () => {
 $('tglRet').addEventListener('click', () => {
   CFG.RET_ON = !CFG.RET_ON;
   $('tglRet').classList.toggle('on', CFG.RET_ON);
-  toast(CFG.RET_ON ? 'Retiradas automáticas do campo ativadas (' + CFG.RET_DIA + ' ch/dia).' : 'Retiradas automáticas desativadas — use o botão Retirada no perfil Campo.');
+  toast(CFG.RET_ON ? 'Retirada consolidada do campo ativada (' + CFG.RET_DIA + ' ch/dia, às ' + fmtHM(CFG.RET_HORA) + ').' : 'Retirada automática desativada — use o botão Retirada no perfil Campo.');
   render();
 });
 $('retMinus').addEventListener('click', () => { CFG.RET_DIA = Math.max(1, CFG.RET_DIA-1); $('retVal').textContent = CFG.RET_DIA + ' ch/dia'; render(); });
 $('retPlus').addEventListener('click', () => { CFG.RET_DIA = Math.min(8, CFG.RET_DIA+1); $('retVal').textContent = CFG.RET_DIA + ' ch/dia'; render(); });
+$('retHora').addEventListener('change', () => { CFG.RET_HORA = +$('retHora').value; toast('Retirada consolidada às ' + fmtHM(CFG.RET_HORA) + '.'); });
 $('tglSound').addEventListener('click', () => {
   AUDIO.enabled = !AUDIO.enabled;
   $('tglSound').classList.toggle('on', AUDIO.enabled);
@@ -1531,12 +1479,6 @@ $('scnTakt').addEventListener('click', () => {
     AUDIO.play('ok');
     toast('CCR normalizado.');
   }
-  render();
-});
-$('scnPico').addEventListener('click', () => {
-  solicitarRetirada(E, 2, 'pico de demanda');
-  handleZoneSound();
-  toast('Pico: campo retirou +2 chapas — observe cobertura e Andon.');
   render();
 });
 
@@ -1571,14 +1513,6 @@ $('btnRetirar').addEventListener('click', () => {
   const r = solicitarRetirada(E, qtdRetirada, 'campo · manual');
   handleZoneSound();
   toast(r.falta>0 ? `Retiradas ${r.atendido}, pendentes ${r.falta} — Andon acionado.` : `Retirada de ${r.atendido} chapa(s) registrada.`);
-  render();
-});
-$('fcRange').addEventListener('input', () => { $('fcVal').textContent = $('fcRange').value + ' ch/sem'; });
-$('btnFc').addEventListener('click', () => {
-  const v = +$('fcRange').value;
-  enviarPrevisao(E, v);
-  $('fcNote').innerHTML = `Previsão vigente: <b style="color:var(--safety)">${v} ch/semana</b> (${fmtNum(v*CFG.TON,1)} t), enviada ${CFG.DIAS[E.diaSemanaIdx]}. Substitui a anterior; reseta na segunda-feira.`;
-  toast('Previsão semanal enviada ao PCP.');
   render();
 });
 
@@ -1617,7 +1551,6 @@ $('btnNextDay').addEventListener('click', () => {
 
 /* boot */
 buildKpiGrid();
-buildMetaTable();
 render();
 requestAnimationFrame(loop);
 </script>
